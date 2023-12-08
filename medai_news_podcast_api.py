@@ -1,13 +1,16 @@
 from get_medai_news import get_websit_info, get_arxiv_summary, get_youtube_dojo, fetch_gnews_links
-
+from summary_simplify_test import summarize, completion, LLM_processing_content, generate_paper_summary
 
 def medai_news_podcast_api(websites):
     # 1. collect the information
     # 遍历网站信息列表并获取信息
+    news_items = [ ]
+    # 1208新增部分
     for site in websites:
         web_link, web_title = get_websit_info(site.url, site.tag_name, site.class_name, site.process_type)
+        new_web_link = {'web': site.url, 'url': web_link, 'title': web_title} # 'url'指的是文章的地址
+        news_items.append(new_web_link)
         print(f"在{site.url}网站爬取到的link和title是:\n{web_link}: {web_title}\n")
-    import pdb; pdb.set_trace()
 
     # 后面生成页面并没有用到arxiv，也没有找到title的获取
     arxiv_summary = get_arxiv_summary()
@@ -24,6 +27,12 @@ def medai_news_podcast_api(websites):
     print("google_news:", google_news)
 
     # 2. summarize the content
+    # 生成内容部分
+    LLM_content = LLM_processing_content(news_items)
+    print("LLM_content:", LLM_content)
+    # 生成整体的summary部分
+    LLM_paper_summary = generate_paper_summary(LLM_content)
+    print("LLM_paper_summary: ", LLM_paper_summary)
 
     # 3. generate the podcast
 
