@@ -1,7 +1,7 @@
 from get_medai_news import get_websit_info, get_arxiv_summary, get_youtube_dojo, fetch_gnews_links
-from summary_simplify_test import summarize, completion, LLM_processing_content, generate_paper_summary
-
-def medai_news_podcast_api(websites):
+from summary_simplify_test import summarize, completion, LLM_processing_content, generate_paper_summary, get_arxiv_summary
+import pprint
+def medai_news_podcast_api(websites, language):
     # 1. collect the information
     # 遍历网站信息列表并获取信息
     news_items = [ ]
@@ -12,10 +12,13 @@ def medai_news_podcast_api(websites):
         news_items.append(new_web_link)
         print(f"在{site.url}网站爬取到的link和title是:\n{web_link}: {web_title}\n")
 
-    # 后面生成页面并没有用到arxiv，也没有找到title的获取
-    arxiv_summary = get_arxiv_summary()
-    print("arxiv_summary:", arxiv_summary)
+    # import pdb; pdb.set_trace()
 
+    # arxiv直接生成summary
+    arxiv_summary = get_arxiv_summary(language, max_results=3) # max_results可以自由改动
+    pprint.pprint(arxiv_summary)
+
+    '''
     # # TODO -- 连接问题，timeout
     # # youtube上的Machine Learning Dojo with Tim Scarfe的视频因连接问题爬取不到
     # youtube_content = get_youtube_dojo()
@@ -25,19 +28,20 @@ def medai_news_podcast_api(websites):
     # googlenews也不行
     google_news = fetch_gnews_links(query='AI, LLM, Machine learning', max_results = 4)
     print("google_news:", google_news)
+    '''
 
     # 2. summarize the content
-    # 生成内容部分
-    LLM_content = LLM_processing_content(news_items)
+    # 生成每篇文章的summary
+    LLM_content = LLM_processing_content(news_items, language)
     print("LLM_content:", LLM_content)
-    # 生成整体的summary部分
-    LLM_paper_summary = generate_paper_summary(LLM_content)
-    print("LLM_paper_summary: ", LLM_paper_summary)
+
+    # 生成整个小报的summary
+    LLM_paper_summary = generate_paper_summary(LLM_content, language)
+    print("LLM_paper_summary:", LLM_paper_summary)
 
     # 3. generate the podcast
 
-    return 
-
+    return
 
 if __name__ == '__main__':
     # 定义要爬取的网站信息
@@ -57,5 +61,6 @@ if __name__ == '__main__':
         # WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
     ]
 
-    medai_news_podcast_api(websites)
+    medai_news_podcast_api(websites, 'Chinese') # language可以选择Chinese或English
+
 
