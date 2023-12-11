@@ -1,5 +1,5 @@
 from get_medai_news import get_websit_info, get_arxiv_summary, get_youtube_dojo, fetch_gnews_links
-from summary_simplify_test import summarize, completion, LLM_processing_content, generate_paper_summary, get_arxiv_summary
+from summarize_medai_news import summarize, completion, LLM_processing_content, generate_paper_summary, get_arxiv_summary
 import pprint
 def medai_news_podcast_api(websites, language):
     # 1. collect the information
