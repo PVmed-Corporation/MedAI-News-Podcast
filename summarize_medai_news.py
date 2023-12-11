@@ -65,29 +65,27 @@ messages =  [           {'role':'system',
 def LLM_processing_content(news_items, language):
     # summarize_website_content and translate information to Chinese
     for index, item in enumerate(news_items):
-        # 归纳网页信息
+        # 调用summarize函数归纳网页信息
         web_summarize = summarize(item['url'])
-        # 在字典中新增sumarry的内容
         news_items[index]['web_summarize'] = web_summarize
-        if language == 'English':
-            if language == 'Chinese':
-                # TODO --这里还要在循环里修改message，有点复杂，但是不修改就要每次重新生成一个
-                # 提取messsage中内容部分翻译网页信息为中文
-                # 中文翻译循环中修改messages中的系统提示为system_message_3
-                messages[0]['content'] = system_message[2]
-                # 同时修改messages中的内容部分
-                messages[1]['content'] = web_summarize
-                # 实际上最后输入是messages这个列表, 但是使用前要注意修改messages中的两部分信息
-                web_chinese = completion(messages[1]['content']) # TODO --最后输入实际是messages这个列表
-                # 新增字典
-                news_items[index]['web_summarize_chinese'] = web_chinese
 
-                # TODO --这里中文的部分还要再看看是直接归纳中文信息，还是直接翻译归纳后的
-                # 提取messsage中标题部分翻译网页信息为中文
-                messages[1]['content'] = news_items[index]['title']
-                title_chinese = completion(messages[1]['content'])
-                news_items[index]['title_chinese'] = title_chinese
-            return news_items
+        if language == 'English':
+            # 处理英文情况的逻辑
+            pass
+
+        elif language == 'Chinese':
+            # 提取messsage中内容部分翻译网页信息为中文
+            # 中文翻译循环中修改messages中的系统提示为system_message_3
+            messages[0]['content'] = system_message[2]
+            # 同时修改messages中的内容部分
+            messages[1]['content'] = web_summarize
+            web_chinese = completion(messages[1]['content'])   # TODO --最后输入实际是messages这个列表
+            news_items[index]['web_summarize_chinese'] = web_chinese
+            # 提取messsage中标题部分翻译网页信息为中文
+            messages[1]['content'] = news_items[index]['title']
+            title_chinese = completion(messages[1]['content'])
+            news_items[index]['title_chinese'] = title_chinese
+
     return news_items
 def generate_paper_summary(news_items, language):
     # 归纳摘要前修改messages中的系统提示为system_message
