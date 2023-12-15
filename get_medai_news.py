@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import arxiv
-import gnews
+from gnews import GNews
 # from pytube import Playlist
 from youtubesearchpython import Playlist, playlist_from_channel_id
 
@@ -130,21 +130,23 @@ def get_websit_info(url, tag_name, class_name, process_type):
         raise ValueError
 
 # 使用内置包的函数
-def get_arxiv_summary():
+def get_arxiv_summary(_arxiv, max_results):
     search = arxiv.Search(
         query="AI, LLM, machine learning, NLP",
         #max_results=st.session_state.arxiv,
-        max_results=2,
+        max_results=max_results,
         sort_by=arxiv.SortCriterion.SubmittedDate
     )
-    ariv_essay = ''
+    
     for result in search.results():
-        ariv_essay += result.summary
-    return ariv_essay
+        _arxiv.get_page(result.entry_id, result.title)
+        _arxiv.get_content(result.summary)
 
-# TODO --连接问题，timeout
-def get_youtube_dojo():
-    channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
+    return
+
+
+def get_youtube_dojo(_youtb, channel_id):
+    # use Playlist get info
     playlist = Playlist(playlist_from_channel_id(channel_id))
     
     while playlist.hasMoreVideos:
@@ -152,24 +154,21 @@ def get_youtube_dojo():
     machine_title = playlist.videos[0]['title']
     machine_link = playlist.videos[0]['link']
     
-    return machine_link, machine_title
+    _youtb.get_page(machine_link, machine_title)
 
-# TODO --连接问题，返回是空置
-# 这里还有一些可选的变量（如max_result）被设置成常数了
-def fetch_gnews_links(query, language='en', country='US', period='1d', start_date=None, end_date=None, max_results=5,
-                    exclude_websites=None):
-    # Ensure that the exclude_websites parameter is a list
-    content = {'title': [], 'summary': [], 'url': []}
+    return
+
+
+def fetch_gnews_links(_google, query, max_results=5):
     # 初始化 GNews
-    google_news = gnews.GNews(language=language, country=country, period=period, start_date=start_date, end_date=end_date,
-                        max_results=max_results, exclude_websites=exclude_websites)
+    google_news = GNews(language='en', country='US', period='1d',
+                        start_date=None, end_date=None,
+                        max_results=max_results, exclude_websites=None)
+
     # 根据query获取新闻
     news_items = google_news.get_news(query)
-    print(news_items)
-    # 提取URLs
-    urls = [item['url'] for item in news_items]
-    content['title'] = [item['title'] for item in news_items]
-    for url in urls:
-        content['url'].append(url)
-        # content['summary'].append(summarize_website_content(url))
-    return content
+    for gn in news_items:
+        _google.get_page(gn.get('url'), gn.get('title'))
+        
+    return
+

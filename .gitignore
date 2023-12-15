@@ -22,7 +22,7 @@ debug
 *.swp
 *.pkl
 *.log
-
+*.txt
 
 
 
