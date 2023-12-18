@@ -1,6 +1,7 @@
 from get_medai_news import get_websit_info, get_arxiv_summary, \
     get_youtube_dojo, fetch_gnews_links
 from summarize_medai_news import LLM_processing_content, generate_paper_summary
+from df_output import dataframe_output
 from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 import pandas as pd
@@ -78,6 +79,7 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     summary_whole = []# [item['web_summarize'] for item in news_items]
     for keys in news_items:
         print("info from:", keys)
+        df = pd.DataFrame(columns=['from', 'Title', 'URL', 'Web_Summary'])
         for ii, _ in enumerate(news_items[keys].title):
             print(ii)
             print("url:", news_items[keys].url_link[ii])
@@ -92,6 +94,25 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
                 print("title:", news_items[keys].trans_title[ii])
                 print("web_summarize:", news_items[keys].trans_content[ii])
 
+            # 储存信息的列表
+            data_list = []
+
+            # 循环添加条目到列表中
+            for keys in news_items:
+                for ii, _ in enumerate(news_items[keys].title):
+                    entry = {
+                        'From': keys,
+                        'Title': news_items[keys].title[ii],
+                        'URL': news_items[keys].url_link[ii],
+                        'Web_Summary': news_items[keys].content[ii]
+                    }
+                    data_list.append(entry)
+
+            # 将列表转换为DataFrame
+            df = pd.DataFrame(data_list)    
+
+            print(df)
+
     # 提取所有信息里面的关键放在开头
     LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
     print("LLM_paper_summary: \n", LLM_paper_summary)
@@ -99,6 +120,7 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     # 3. generate the podcast
 
     return
+
 
 if __name__ == '__main__':
     # 定义要爬取的网站信息
@@ -108,12 +130,12 @@ if __name__ == '__main__':
     # 这里是可以一步获取标题和链接的
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
-        WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
-        WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
-        WebsiteInfo(url="https://aws.amazon.com/blogs/machine-learning/", tag_name="div", class_name="lb-col lb-mid-18 lb-tiny-24", process_type="aws"), # aws
-        WebsiteInfo(url="https://blogs.microsoft.com/", tag_name="a", class_name="f-post-link", process_type="microsoft"), # microsoft
-        WebsiteInfo(url="https://openai.com/", tag_name="a", class_name="ui-link group relative cursor-pointer", process_type="openai"), # openai_link
-        WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
+        # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
+        # WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
+        # WebsiteInfo(url="https://aws.amazon.com/blogs/machine-learning/", tag_name="div", class_name="lb-col lb-mid-18 lb-tiny-24", process_type="aws"), # aws
+        # WebsiteInfo(url="https://blogs.microsoft.com/", tag_name="a", class_name="f-post-link", process_type="microsoft"), # microsoft
+        # WebsiteInfo(url="https://openai.com/", tag_name="a", class_name="ui-link group relative cursor-pointer", process_type="openai"), # openai_link
+        # WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
         WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwc"), # paper with code
         WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="jqzx") # 机器之心
         # TODO  Error code: 400
