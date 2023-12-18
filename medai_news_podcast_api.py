@@ -50,21 +50,21 @@ def medai_news_podcast_api(websites, token_path, language="English"):
 
         print(f"在{site.process_type}网站爬取到的link和title是:\n{web_link}: {web_title}\n")
 
-    # arxiv直接调研api
+    # arxiv直接调用api
     _arxiv = Source("arxiv")
-    get_arxiv_summary(_arxiv, max_results=3) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, max_results=2) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     
-    # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
-    channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
-    _youtb = Source("youtube")
-    get_youtube_dojo(_youtb, channel_id)
-    news_items["youtube"] = _youtb
+    # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
+    # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
+    # _youtb = Source("youtube")
+    # get_youtube_dojo(_youtb, channel_id)
+    # news_items["youtube"] = _youtb
 
     # google news
     query = 'AI, LLM, Machine learning'
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
     news_items["google"] = _google
 
     # 2. summarize the content
@@ -92,9 +92,9 @@ def medai_news_podcast_api(websites, token_path, language="English"):
                 print("title:", news_items[keys].trans_title[ii])
                 print("web_summarize:", news_items[keys].trans_content[ii])
 
-    # 提取所有信息里面的关键放在开头
-    LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
-    print("LLM_paper_summary: \n", LLM_paper_summary)
+    # # 提取所有信息里面的关键放在开头
+    # LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
+    # print("LLM_paper_summary: \n", LLM_paper_summary)
 
     # 3. generate the podcast
 
@@ -109,15 +109,16 @@ if __name__ == '__main__':
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
         WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
-        WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
-        WebsiteInfo(url="https://aws.amazon.com/blogs/machine-learning/", tag_name="div", class_name="lb-col lb-mid-18 lb-tiny-24", process_type="aws"), # aws
-        WebsiteInfo(url="https://blogs.microsoft.com/", tag_name="a", class_name="f-post-link", process_type="microsoft"), # microsoft
-        WebsiteInfo(url="https://openai.com/", tag_name="a", class_name="ui-link group relative cursor-pointer", process_type="openai"), # openai_link
-        WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
+        # WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
+        # WebsiteInfo(url="https://aws.amazon.com/blogs/machine-learning/", tag_name="div", class_name="lb-col lb-mid-18 lb-tiny-24", process_type="aws"), # aws
+        # WebsiteInfo(url="https://blogs.microsoft.com/", tag_name="a", class_name="f-post-link", process_type="microsoft"), # microsoft
+        # WebsiteInfo(url="https://openai.com/", tag_name="a", class_name="ui-link group relative cursor-pointer", process_type="openai"), # openai_link
+        # WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
         # TODO  Error code: 400
         # WebsiteInfo(url="https://lexfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman"), # lexfridman_link
+       
     ]
     
     # language可以选择Chinese或English
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese')
+    medai_news_podcast_api(websites, "config_file.txt", 'English')
 
