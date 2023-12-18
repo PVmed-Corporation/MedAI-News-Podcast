@@ -22,7 +22,7 @@ def get_websit_info(url, process_type="paperwc"): # , tag_name, class_name, proc
 
 web_link, web_title = get_websit_info(url)
 print(web_link,'\n', web_title)
-'''
+
 
 url="https://www.jiqizhixin.com/"
 
@@ -42,7 +42,7 @@ def get_websit_info(url, process_type="paperwc"): # , tag_name, class_name, proc
         web_title = a_tag.get('alt')
         
     return web_link, web_title
-'''    
+    
 
 web_link, web_title = get_websit_info(url)
 print(web_link,'\n', web_title)

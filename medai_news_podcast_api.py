@@ -3,7 +3,7 @@ from get_medai_news import get_websit_info, get_arxiv_summary, \
 from summarize_medai_news import LLM_processing_content, generate_paper_summary
 from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
-
+import pandas as pd
 
 class Source(object):
     def __init__(self, name):
@@ -29,7 +29,7 @@ class Source(object):
         self.trans_content.append(trans_content)
      
 
-def medai_news_podcast_api(websites, token_path, language="English"):
+def medai_news_podcast_api(websites, token_path, language="Chinese"):
 
     with open(token_path) as f:
             private_token = f.readline()
@@ -50,51 +50,51 @@ def medai_news_podcast_api(websites, token_path, language="English"):
 
         print(f"在{site.process_type}网站爬取到的link和title是:\n{web_link}: {web_title}\n")
 
-    # # arxiv直接调用api
-    # _arxiv = Source("arxiv")
-    # get_arxiv_summary(_arxiv, max_results=2) # max_results可以自由改动
-    # news_items["arxiv"] = _arxiv
+    # arxiv直接调用api
+    _arxiv = Source("arxiv")
+    get_arxiv_summary(_arxiv, max_results=2) # max_results可以自由改动
+    news_items["arxiv"] = _arxiv
     
-    # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
-    # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
-    # _youtb = Source("youtube")
-    # get_youtube_dojo(_youtb, channel_id)
-    # news_items["youtube"] = _youtb
+    # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
+    channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
+    _youtb = Source("youtube")
+    get_youtube_dojo(_youtb, channel_id)
+    news_items["youtube"] = _youtb
 
-    # # google news
-    # query = 'AI, LLM, Machine learning'
-    # _google = Source("google")
-    # fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
-    # news_items["google"] = _google
+    # google news
+    query = 'medical imaging, AI'
+    _google = Source("google")
+    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
+    news_items["google"] = _google
 
     # 2. summarize the content
     client = OpenAI(api_key=private_token)
     llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k", openai_api_key=private_token)
     
     # 生成每篇文章的summary
-    # LLM_processing_content(llm, client, news_items, language)
+    LLM_processing_content(llm, client, news_items, language)
     
     # 修改messages中的内容部分为全部网页的summary
-    # summary_whole = []# [item['web_summarize'] for item in news_items]
-    # for keys in news_items:
-    #     print("info from:", keys)
-    #     for ii, _ in enumerate(news_items[keys].title):
-    #         print(ii)
-    #         print("url:", news_items[keys].url_link[ii])
-    #         # update summary
-    #         if keys in ["google","openai","nvidia","apple"]:
-    #             summary_whole.append(news_items[keys].content[ii])
+    summary_whole = []# [item['web_summarize'] for item in news_items]
+    for keys in news_items:
+        print("info from:", keys)
+        for ii, _ in enumerate(news_items[keys].title):
+            print(ii)
+            print("url:", news_items[keys].url_link[ii])
+            # update summary
+            if keys in ["google","openai","nvidia","apple"]:
+                summary_whole.append(news_items[keys].content[ii])
 
-    #         if language == 'English':
-    #             print("title:", news_items[keys].title[ii])
-    #             print("web_summarize:", news_items[keys].content[ii])
-    #         else:
-    #             print("title:", news_items[keys].trans_title[ii])
-    #             print("web_summarize:", news_items[keys].trans_content[ii])
+            if language == 'English':
+                print("title:", news_items[keys].title[ii])
+                print("web_summarize:", news_items[keys].content[ii])
+            else:
+                print("title:", news_items[keys].trans_title[ii])
+                print("web_summarize:", news_items[keys].trans_content[ii])
 
-    # # 提取所有信息里面的关键放在开头
-    # LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
-    # print("LLM_paper_summary: \n", LLM_paper_summary)
+    # 提取所有信息里面的关键放在开头
+    LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
+    print("LLM_paper_summary: \n", LLM_paper_summary)
 
     # 3. generate the podcast
 
