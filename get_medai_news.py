@@ -14,11 +14,12 @@ def get_websit_info(url, tag_name, class_name, process_type):
     }
     response = requests.get(url, headers=headers)
 
+    
     # Check the status code
     if response.status_code == 200:
         # Parse the HTML content
         soup = BeautifulSoup(response.content, 'html.parser')
-
+        
         # 爬取OPENAI_link
         if process_type == "openai": 
             # 查找具有特定类名的<a>标签
@@ -36,7 +37,8 @@ def get_websit_info(url, tag_name, class_name, process_type):
                     raise ValueError
             else:
                 print("Couldn't find the target post URL.")
-                raise ValueError                
+                raise ValueError  
+               
         
         # 爬取lexfridman_link
         elif process_type == "lexfridman": 
@@ -120,19 +122,39 @@ def get_websit_info(url, tag_name, class_name, process_type):
             else:
                 print("Couldn't find the target post URL.")
                 raise ValueError
-        else:
-            print("Invalid process type.")
-            raise ValueError
+        
+        # 爬取paper with code信息
+        elif process_type == "paperwc":  
+            articles = soup.find(class_=class_name).find('h1')
+            if articles:
+                # 提取 href 值和标题文本
+                web_link = url + articles.a['href']
+                web_titile = articles.a.get_text()
+            else:
+                print("Couldn't find the target post URL.")
+                raise ValueError        
+        
+        # 爬取机器之心信息
+        elif process_type == "jqzx":  
+            articles = soup.find(class_=class_name).find("a")
+            if articles:                
+                web_titile = articles.get('alt')
+                web_link = url + articles.get('href')
+            else:
+                print("Couldn't find the target post URL.")
+                raise ValueError  
         
         return web_link, web_titile   
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
         raise ValueError
+        
+
 
 # 使用内置包的函数
 def get_arxiv_summary(_arxiv, max_results):
     search = arxiv.Search(
-        query="AI, LLM, machine learning, NLP",
+        query="AI, medical imaging",
         #max_results=st.session_state.arxiv,
         max_results=max_results,
         sort_by=arxiv.SortCriterion.SubmittedDate
@@ -143,7 +165,6 @@ def get_arxiv_summary(_arxiv, max_results):
         _arxiv.get_content(result.summary)
 
     return
-
 
 def get_youtube_dojo(_youtb, channel_id):
     # use Playlist get info
@@ -161,7 +182,7 @@ def get_youtube_dojo(_youtb, channel_id):
 
 def fetch_gnews_links(_google, query, max_results=5):
     # 初始化 GNews
-    google_news = GNews(language='en', country='US', period='1d',
+    google_news = GNews(language='en', country='cn', period='1d',
                         start_date=None, end_date=None,
                         max_results=max_results, exclude_websites=None)
 
