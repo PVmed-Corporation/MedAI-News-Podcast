@@ -1,10 +1,12 @@
+# encoding:utf-8
 from get_medai_news import get_websit_info, get_arxiv_summary, \
     get_youtube_dojo, fetch_gnews_links
 from summarize_medai_news import LLM_processing_content, generate_paper_summary
-from df_output import dataframe_output
 from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 import pandas as pd
+import xlsxwriter
+
 
 class Source(object):
     def __init__(self, name):
@@ -117,8 +119,9 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
                     output_list.append(entry)
 
             # 将列表转换为DataFrame
-            df = pd.DataFrame(data=output_list).set_index(["From","Title"])    
-            df.to_excel("web_sum_output.xlsx")  
+            df = pd.DataFrame(data=output_list).set_index(["From","Title"])
+            with pd.ExcelWriter("web_sum_output.xlsx") as writer:
+                df.to_excel(writer) 
             print(df)
 
     # 提取所有信息里面的关键放在开头
@@ -128,7 +131,6 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     # 3. generate the podcast
 
     return
-
 
 if __name__ == '__main__':
     # 定义要爬取的网站信息
@@ -147,8 +149,7 @@ if __name__ == '__main__':
         WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwc"), # paper with code
         WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="jqzx") # 机器之心
         # TODO  Error code: 400
-        # WebsiteInfo(url="https://lexfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_link
-        
+        # WebsiteInfo(url="https://lexfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
     ]
     
     # language可以选择Chinese或English

@@ -39,7 +39,6 @@ def get_websit_info(url, tag_name, class_name, process_type):
                 print("Couldn't find the target post URL.")
                 raise ValueError  
                
-        
         # 爬取lexfridman_link
         elif process_type == "lexfridman": 
             transcript_link_element = soup.find(tag_name, string="Transcript")
@@ -111,7 +110,6 @@ def get_websit_info(url, tag_name, class_name, process_type):
                 print("Couldn't find the target post URL.")
                 raise ValueError
 
-        # TODO --连接问题，timeout -- 待用云服务器再尝试
         # 爬取techcrunch link & title
         elif process_type == "techcrunch":  
             # 由于网站可能有多个这样的链接，我们只选择第一个匹配的项

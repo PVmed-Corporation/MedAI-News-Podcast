@@ -12,8 +12,9 @@ system_message = ['You are a very talented editor, skilled at consolidatingfragm
                   'any details. Compile the news article based on the information given.',
                   'You are a linguist, skilled in summarizing textual content and presenting'
                   ' it in 3 bullet points using markdown. ',
-                  '你是个语言学家，擅长把英文翻译成中文。要注意表达的流畅和使用中文的表达习惯。'
-                  '不要返回多余的信息，只把文字翻译成中文。']
+                  '你是个翻译学家。要注意语言的流畅,通顺和中文的表达习惯。'
+                  '不要返回多余的和无关的信息，只把文字翻译成中文。'
+                    ]
 
 
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
