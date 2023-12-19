@@ -6,7 +6,7 @@ def dataframe_output(news_items, language='English'):
 
     for keys in news_items:
         print(keys)
-        '''
+    
         for ii, _ in enumerate(news_items[keys].title):
             title = news_items[keys].title[ii]
             url = news_items[keys].url_link[ii]
@@ -19,5 +19,5 @@ def dataframe_output(news_items, language='English'):
             # 将新的一行添加到 DataFrame
             df = df.append({'Title': title, 'URL': url, 'Web_Summary': web_summary}, ignore_index=True)
             print(df)
-        '''
+    
     return df
