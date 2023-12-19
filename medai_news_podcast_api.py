@@ -117,7 +117,7 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
                     output_list.append(entry)
 
             # 将列表转换为DataFrame
-            df = pd.DataFrame(output_list)    
+            df = pd.DataFrame(data=output_list).set_index(["From","Title"])    
             df.to_excel("web_sum_output.xlsx")  
             print(df)
 

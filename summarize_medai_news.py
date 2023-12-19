@@ -9,7 +9,7 @@ messages = [{'role': 'system',
 
 system_message = ['You are a very talented editor, skilled at consolidatingfragmented'
                   'information and introductions into a cohesive script, without missing'
-                  'any details. Compile the news article based on the information given ',
+                  'any details. Compile the news article based on the information given.',
                   'You are a linguist, skilled in summarizing textual content and presenting'
                   ' it in 3 bullet points using markdown. ',
                   '你是个语言学家，擅长把英文翻译成中文。要注意表达的流畅和使用中文的表达习惯。'
