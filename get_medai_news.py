@@ -135,7 +135,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
                 raise ValueError        
         
         # 爬取机器之心信息
-        elif process_type == "jqzx":  
+        elif process_type == "机器之心":  
             articles = soup.find(class_=class_name).find("a")
             if articles:                
                 web_titile = articles.get('alt')
