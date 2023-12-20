@@ -6,7 +6,7 @@ from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 import pandas as pd
 import xlsxwriter
-from df_output import generate_df_summary
+from df_output import generate_df_summary, generate_md_summary
 import pickle
 
 class Source(object):
@@ -39,9 +39,26 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
             private_token = f.readline()
 
     # 1. collect the information
-    # 遍历网站信息列表并获取信息
     news_items = {}
     
+    # arxiv直接调用api
+    _arxiv = Source("arxiv")
+    get_arxiv_summary(_arxiv, max_results=3) # max_results可以自由改动
+    news_items["arxiv"] = _arxiv
+    
+    # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
+    # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
+    # _youtb = Source("youtube")
+    # get_youtube_dojo(_youtb, channel_id)
+    # news_items["youtube"] = _youtb
+
+    # google news
+    query = 'medical imaging, AI'
+    _google = Source("google")
+    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
+    news_items["google"] = _google
+
+    # 遍历网站信息列表并获取信息
     for site in websites:
         # TODO: 按照最新内容，可能不止一个link
         web_link, web_title = get_websit_info(site.url, site.tag_name, site.class_name, site.process_type)
@@ -54,22 +71,7 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
 
         print(f"在{site.process_type}网站爬取到的link和title是:\n{web_link}: {web_title}\n")
 
-    # arxiv直接调用api
-    _arxiv = Source("arxiv")
-    get_arxiv_summary(_arxiv, max_results=2) # max_results可以自由改动
-    news_items["arxiv"] = _arxiv
-    
-    # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
-    # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
-    # _youtb = Source("youtube")
-    # get_youtube_dojo(_youtb, channel_id)
-    # news_items["youtube"] = _youtb
 
-    # google news
-    query = 'medical imaging, AI'
-    _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
-    news_items["google"] = _google
 
     # 2. summarize the content
     client = OpenAI(api_key=private_token)
@@ -104,12 +106,12 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     # 3. generate the podcast
     # 将实例保存到文件
     source_instance = news_items
-    with open('source_instance_cn.pkl', 'wb') as f:
+    with open('source_instance.pkl', 'wb') as f:
         pickle.dump(source_instance, f)
 
     # 生成excel文件
-    generate_df_summary(news_items, 'Chinese')
-
+    # generate_df_summary(news_items, 'English')
+    generate_md_summary(news_items, 'English')
     return
 
 if __name__ == '__main__':
@@ -133,7 +135,7 @@ if __name__ == '__main__':
     ]
     
     # language可以选择Chinese或English
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese')
+    medai_news_podcast_api(websites, "config_file.txt", 'English')
 
 
 
