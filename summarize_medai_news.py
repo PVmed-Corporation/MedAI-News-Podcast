@@ -15,8 +15,12 @@ system_message = ['You are a very talented editor, skilled at consolidatingfragm
                   ' it in 3 bullet points using markdown. ',
                   '你是个翻译学家。要注意语言的流畅,通顺和中文的表达习惯。'
                   '不要返回多余的和无关的信息，只把文字翻译成中文。',
-                  '你是个中文杂志编辑。你要检查生成的文本中是否有乱码和无关信息，'
-                  '删除乱码和无关信息，保持其他内容不变'
+                  '你是个中文杂志编辑。要检查生成的标题中是否有乱码和无关信息，'
+                  '删除乱码和无关信息，生成流畅通顺的中文标题，保持内容的一致性'
+                  '直接返回结果,不要返回多余信息',
+                  '你是个中文杂志编辑。要检查并删除乱码和无关信息，'
+                  '生成一段中文总结，保持内容的一致性，不超过250字'
+                  '直接返回结果,不要返回多余信息'
                   
                     ]
 
@@ -48,7 +52,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 response = client.chat.completions.create(
                                 model="gpt-3.5-turbo-16k",
                                 messages=messages,
-                                temperature=1.5,
+                                temperature=1.0,
                                 max_tokens=2048,
                             )
                 web_chinese = response.choices[0].message.content
@@ -59,13 +63,36 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 response = client.chat.completions.create(
                                 model="gpt-3.5-turbo-16k",
                                 messages=messages,
-                                temperature=1.5,
+                                temperature=1.0,
                                 max_tokens=2048,
                             )
                 title_chinese = response.choices[0].message.content
+
+                # 检查信息正确
+                messages[0]['content'] = system_message[4]
+                messages[1]['content'] = web_chinese
+
+                response = client.chat.completions.create(
+                                model="gpt-3.5-turbo-16k",
+                                messages=messages,
+                                temperature=1.0,
+                                max_tokens=2048,
+                            )
+                web_chinese_r = response.choices[0].message.content
+
+                # 提取messsage中标题部分翻译网页信息为中文
+                messages[0]['content'] = system_message[3]
+                messages[1]['content'] = title_chinese
+                response = client.chat.completions.create(
+                                model="gpt-3.5-turbo-16k",
+                                messages=messages,
+                                temperature=1.0,
+                                max_tokens=2048,
+                            )
+                title_chinese_r = response.choices[0].message.content
                 
                 # add the translation version to collector
-                item.get_trans_info(title_chinese, web_chinese)
+                item.get_trans_info(title_chinese_r, web_chinese_r)
     
     return
 
