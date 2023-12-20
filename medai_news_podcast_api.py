@@ -58,11 +58,11 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     get_arxiv_summary(_arxiv, max_results=2) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     
-    # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
-    channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
-    _youtb = Source("youtube")
-    get_youtube_dojo(_youtb, channel_id)
-    news_items["youtube"] = _youtb
+    # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
+    # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
+    # _youtb = Source("youtube")
+    # get_youtube_dojo(_youtb, channel_id)
+    # news_items["youtube"] = _youtb
 
     # google news
     query = 'medical imaging, AI'
@@ -148,8 +148,8 @@ if __name__ == '__main__':
         WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
         WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwc"), # paper with code
         WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="jqzx") # 机器之心
-        # TODO  Error code: 400
-        # WebsiteInfo(url="https://lexfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
+        # # TODO  Error code: 400
+        # # WebsiteInfo(url="https://lexfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
     ]
     
     # language可以选择Chinese或English

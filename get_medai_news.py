@@ -160,7 +160,7 @@ def get_arxiv_summary(_arxiv, max_results):
     
     for result in search.results():
         _arxiv.get_page(result.entry_id, result.title)
-        _arxiv.get_content(result.summary)
+        # _arxiv.get_content(result.summary)
 
     return
 

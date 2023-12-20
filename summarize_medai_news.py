@@ -9,11 +9,15 @@ messages = [{'role': 'system',
 
 system_message = ['You are a very talented editor, skilled at consolidatingfragmented'
                   'information and introductions into a cohesive script, without missing'
-                  'any details. Compile the news article based on the information given.',
+                  'any details, control the content about 100 words. '
+                  'Compile the news article based on the information given.',
                   'You are a linguist, skilled in summarizing textual content and presenting'
                   ' it in 3 bullet points using markdown. ',
                   '你是个翻译学家。要注意语言的流畅,通顺和中文的表达习惯。'
-                  '不要返回多余的和无关的信息，只把文字翻译成中文。'
+                  '不要返回多余的和无关的信息，只把文字翻译成中文。',
+                  '你是个中文杂志编辑。你要检查生成的文本中是否有乱码和无关信息，'
+                  '删除乱码和无关信息，保持其他内容不变'
+                  
                     ]
 
 
@@ -26,14 +30,14 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
         item = news_items[keys]
         # Load the content from the given URL
         for index, _item in enumerate(item.url_link):
-            if keys not in ["arxiv"]:
-                # use Web loader to get info   
-                loader = WebBaseLoader(_item)
-                docs = loader.load()
+            # if keys not in ["arxiv"]:
+            # use Web loader to get info   
+            loader = WebBaseLoader(_item)
+            docs = loader.load()
                 
-                # Run the chain on the loaded documents
-                web_summarize = chain.run(docs)
-                item.get_content(web_summarize)
+            # Run the chain on the loaded documents
+            web_summarize = chain.run(docs)
+            item.get_content(web_summarize)
 
             if language == 'Chinese': 
                 # 提取messsage中内容部分翻译网页信息为中文
@@ -49,6 +53,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                             )
                 web_chinese = response.choices[0].message.content
 
+                
                 # 提取messsage中标题部分翻译网页信息为中文
                 messages[1]['content'] = item.title[index]
                 response = client.chat.completions.create(
