@@ -7,6 +7,7 @@ from langchain.chat_models import ChatOpenAI
 import pandas as pd
 import xlsxwriter
 from df_output import generate_df_summary
+import pickle
 
 class Source(object):
     def __init__(self, name):
@@ -96,42 +97,18 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
                 print("title:", news_items[keys].trans_title[ii])
                 print("web_summarize:", news_items[keys].trans_content[ii])
 
-            # 生成excel文件
-            generate_df_summary(news_items, 'English')
-            '''
-            # 储存信息的列表
-            output_list = []
-
-            # 循环添加条目到列表中
-            for keys in news_items:
-                for ii, _ in enumerate(news_items[keys].title):
-                    if language == 'English':
-                        entry = {
-                            'From': keys,
-                            'Title': news_items[keys].title[ii],
-                            'URL': news_items[keys].url_link[ii],
-                            'Web_Summary': news_items[keys].content[ii]
-                        }
-                    else:
-                        entry = {
-                            'From': keys,
-                            'Title': news_items[keys].trans_title[ii],
-                            'URL': news_items[keys].url_link[ii],
-                            'Web_Summary': news_items[keys].trans_content[ii]
-                        }                        
-                    output_list.append(entry)
-
-            # 将列表转换为DataFrame
-            df = pd.DataFrame(data=output_list).set_index(["From","Title"])
-            with pd.ExcelWriter("web_sum_output.xlsx") as writer:
-                df.to_excel(writer) 
-            print(df)
-            '''
     # 提取所有信息里面的关键放在开头
     LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
     print("LLM_paper_summary: \n", LLM_paper_summary)
 
     # 3. generate the podcast
+    # 将实例保存到文件
+    source_instance = news_items
+    with open('source_instance_cn.pkl', 'wb') as f:
+        pickle.dump(source_instance, f)
+
+    # 生成excel文件
+    generate_df_summary(news_items, 'English')
 
     return
 
@@ -156,5 +133,7 @@ if __name__ == '__main__':
     ]
     
     # language可以选择Chinese或English
-    medai_news_podcast_api(websites, "config_file.txt", 'English')
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese')
+
+
 
