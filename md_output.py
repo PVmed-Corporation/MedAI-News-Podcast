@@ -8,8 +8,10 @@ with open('source_instance_cn.pkl', 'rb') as f:
 
 def generate_md_summary(news_items, language):
     # 使用加载的实例
-    markdown_all = ""
-
+    markdown_all = " "
+    markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
+    markdown_all += """Summary and Commentary\n\n"""
+                    
     for keys in news_items:
         print({keys})
         markdown_all += f"## Info from: {keys}\n"
@@ -18,7 +20,7 @@ def generate_md_summary(news_items, language):
                 markdown_all += f"  - **URL:** {news_items[keys].url_link[ii]}\n"
                 markdown_all += f"- **Title:** {news_items[keys].title[ii]}\n"
                 markdown_all += f"  - **Web Summary:** {news_items[keys].content[ii]}\n\n"
-                
+
             # TODO -- 待整理
             else:
                 markdown_all += f"  - **URL:** {news_items[keys].url_link[ii]}\n"
@@ -26,7 +28,7 @@ def generate_md_summary(news_items, language):
                 markdown_all += f"  - **Web Summary:** {news_items[keys].trans_content[ii]}\n\n"
     with open('md_output.md', 'w', encoding='utf-8') as file:
         file.write(markdown_all)
-    print("Markdown文件已生成：md_output.md")
+        print("Markdown文件已生成：md_output.md")
 
     return
 

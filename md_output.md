@@ -1,3 +1,7 @@
+ <h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>
+
+Summary and Commentary
+
 ## Info from: apple
   - **URL:** https://machinelearning.apple.com//research/bootstrap-own-variance
 - **Title:** Bootstrap Your Own Variance 
