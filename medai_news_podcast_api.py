@@ -108,7 +108,7 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
         pickle.dump(source_instance, f)
 
     # 生成excel文件
-    generate_df_summary(news_items, 'English')
+    generate_df_summary(news_items, 'Chinese')
 
     return
 
