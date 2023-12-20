@@ -6,7 +6,7 @@ from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 import pandas as pd
 import xlsxwriter
-
+from df_output import generate_df_summary
 
 class Source(object):
     def __init__(self, name):
@@ -96,6 +96,9 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
                 print("title:", news_items[keys].trans_title[ii])
                 print("web_summarize:", news_items[keys].trans_content[ii])
 
+            # 生成excel文件
+            generate_df_summary(news_items, 'English')
+            '''
             # 储存信息的列表
             output_list = []
 
@@ -123,7 +126,7 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
             with pd.ExcelWriter("web_sum_output.xlsx") as writer:
                 df.to_excel(writer) 
             print(df)
-
+            '''
     # 提取所有信息里面的关键放在开头
     LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
     print("LLM_paper_summary: \n", LLM_paper_summary)
@@ -153,5 +156,5 @@ if __name__ == '__main__':
     ]
     
     # language可以选择Chinese或English
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese')
+    medai_news_podcast_api(websites, "config_file.txt", 'English')
 

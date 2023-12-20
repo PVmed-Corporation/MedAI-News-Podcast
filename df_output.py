@@ -1,23 +1,29 @@
 # 使用pandas输出内容
+# 循环添加条目到列表中
 import pandas as pd
-def dataframe_output(news_items, language='English'):
-# 创建空的 DataFrame
-    df = pd.DataFrame(columns=['Title', 'URL', 'Web_Summary'])
-
+def generate_df_summary(news_items, language):
+    output_list = []
     for keys in news_items:
-        print(keys)
-    
         for ii, _ in enumerate(news_items[keys].title):
-            title = news_items[keys].title[ii]
-            url = news_items[keys].url_link[ii]
-            
             if language == 'English':
-                web_summary = news_items[keys].content[ii]
+                entry = {
+                    'From': keys,
+                    'Title': news_items[keys].title[ii],
+                    'URL': news_items[keys].url_link[ii],
+                    'Web_Summary': news_items[keys].content[ii]
+                }
             else:
-                web_summary = news_items[keys].trans_content[ii]
+                entry = {
+                    'From': keys,
+                    'Title': news_items[keys].trans_title[ii],
+                    'URL': news_items[keys].url_link[ii],
+                    'Web_Summary': news_items[keys].trans_content[ii]
+                }                        
+            output_list.append(entry)
 
-            # 将新的一行添加到 DataFrame
-            df = df.append({'Title': title, 'URL': url, 'Web_Summary': web_summary}, ignore_index=True)
-            print(df)
-    
-    return df
+    # 将列表转换为DataFrame
+    df = pd.DataFrame(data=output_list).set_index(["From","Title"])
+    with pd.ExcelWriter("web_sum_output.xlsx") as writer:
+        df.to_excel(writer) 
+    print(df)
+    return
