@@ -20,6 +20,9 @@ system_message = ['You are a very talented editor, skilled at consolidatingfragm
                   '直接返回结果,不要返回多余信息',
                   '你是个中文杂志编辑。要检查并删除乱码和无关信息，'
                   '生成一段中文总结，保持内容的一致性，不超过250字'
+                  '直接返回结果,不要返回多余信息',
+                  '你是个中文杂志编辑。要检查并删除乱码和无关信息，'
+                  '生成三个中文的要点，保持内容的一致性，不超过250字'
                   '直接返回结果,不要返回多余信息'
                   
                     ]
@@ -135,6 +138,18 @@ def generate_paper_summary(client, info2summarize, language):
                                 temperature=1.5,
                                 max_tokens=4000,
                             )
+        generate_key_points = response.choices[0].message.content
+
+        # 检查信息正确
+        messages[0]['content'] = system_message[5]
+        messages[1]['content'] = generate_key_points
+
+        response = client.chat.completions.create(
+                        model="gpt-3.5-turbo-16k",
+                        messages=messages,
+                        temperature=1.0,
+                        max_tokens=2048,
+                    )
         generate_key_points = response.choices[0].message.content
     
     return generate_key_points

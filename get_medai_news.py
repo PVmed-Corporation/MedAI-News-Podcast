@@ -154,7 +154,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
 # 使用内置包的函数
 def get_arxiv_summary(_arxiv, max_results):
     search = arxiv.Search(
-        query="medical imaging",
+        query="medical imaging, CV, deeep learning",
         #max_results=st.session_state.arxiv,
         max_results=max_results,
         sort_by=arxiv.SortCriterion.SubmittedDate

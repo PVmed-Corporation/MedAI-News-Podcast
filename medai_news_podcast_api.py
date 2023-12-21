@@ -6,7 +6,7 @@ from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 import pandas as pd
 import xlsxwriter
-from df_output import generate_df_summary, generate_md_summary
+from generate_output import generate_df_summary, generate_md_summary
 import pickle
 
 class Source(object):
@@ -109,9 +109,8 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     with open('source_instance.pkl', 'wb') as f:
         pickle.dump(source_instance, f)
 
-    # 生成excel文件
     # generate_df_summary(news_items, 'English')
-    generate_md_summary(news_items, 'English')
+    generate_md_summary(news_items, LLM_paper_summary, language)
     return
 
 if __name__ == '__main__':
@@ -135,7 +134,7 @@ if __name__ == '__main__':
     ]
     
     # language可以选择Chinese或English
-    medai_news_podcast_api(websites, "config_file.txt", 'English')
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese')
 
 
 
