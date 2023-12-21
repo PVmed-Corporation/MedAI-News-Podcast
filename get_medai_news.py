@@ -124,7 +124,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
                 raise ValueError
         
         # 爬取paper with code信息
-        elif process_type == "paperwc":  
+        elif process_type == "paperwithcode":  
             articles = soup.find(class_=class_name).find('h1')
             if articles:
                 # 提取 href 值和标题文本
@@ -149,7 +149,6 @@ def get_websit_info(url, tag_name, class_name, process_type):
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
         raise ValueError
         
-
 
 # 使用内置包的函数
 def get_arxiv_summary(_arxiv, max_results):

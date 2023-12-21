@@ -1,52 +1,54 @@
  <h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>
 
-## Key points of today news
+## Key Points of Today News
 
-- GreenPeak刘已收购爱辛国际医疗系统，以扩展其在医疗行业的业务。
-- 人工智能（AI）在提升辐射放射治疗和改善患者效果方面具有潜力。
-- 预计到2023年，人工智能的发展将在医疗、交通和娱乐等多个行业产生重大影响。
+- GreenPeak Partners收购Aycan Medical Systems，以推动其在医疗行业的扩张。
+- AI专家预测，到2023年，医疗、交通和娱乐领域将迎来重大创新。
+- 对医学影像的进步和趋势进行探索，特别关注该领域的创新。
 
-<a href="https://news.google.com/rss/articles/CBMicWh0dHBzOi8vd3d3LmF1bnRtaW5uaWUuY29tL2ltYWdpbmctaW5mb3JtYXRpY3MvYXJ0aWNsZS8xNTY2MDcwOC9ncmVlbnBlYWstcGFydG5lcnMtYWNxdWlyZXMtYXljYW4tbWVkaWNhbC1zeXN0ZW1z0gEA?oc=5&hl=en-US&gl=US&ceid=US:en" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 绿峰公司收购aycan医疗系统</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">google</span>
+<a href="https://news.google.com/rss/articles/CBMicWh0dHBzOi8vd3d3LmF1bnRtaW5uaWUuY29tL2ltYWdpbmctaW5mb3JtYXRpY3MvYXJ0aWNsZS8xNTY2MDcwOC9ncmVlbnBlYWstcGFydG5lcnMtYWNxdWlyZXMtYXljYW4tbWVkaWNhbC1zeXN0ZW1z0gEA?oc=5&hl=en-US&gl=US&ceid=US:en" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> Greenpeak Partners收购了aycan Medical Systems</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">google</span>
 
- GreenPeak Partners最近宣布收购Aycan Medical Systems，这是一家专注于医疗成像解决方案的公司。此举旨在增强GreenPeak Partners在医疗行业的影响力，并扩大其产品和服务的范围。通过收购Aycan Medical Systems，GreenPeak Partners将能够为客户提供更多创新的医疗解决方案，并进一步巩固其在市场上的领导地位。这次收购将为GreenPeak Partners带来更多业务机会，并提高其在医疗行业中的竞争力。
+ GreenPeak Partners最近宣布已成功收购Aycan Medical Systems，这是一家专注于医疗影像解决方案的供应商。这一举措是为了帮助GreenPeak在医疗行业扩大市场占有率和影响力。通过整合双方的专业知识和资源，GreenPeak将能够提供更广泛和高质量的医疗影像解决方案，以满足不断增长的医疗行业需求。这次收购对双方都将带来更多机会和潜力，同时也为客户提供更优质的产品和服务。
 
-<a href="https://news.google.com/rss/articles/CBMiVGh0dHBzOi8vd3d3Lml0bm9ubGluZS5jb20vY29udGVudC9hcnRpZmljaWFsLWdlbmVyYWwtaW50ZWxsaWdlbmNlLXJhZGlhdGlvbi1vbmNvbG9nedIBAA?oc=5&hl=en-US&gl=US&ceid=US:en" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 放射肿瘤学中的人工智能：影像技术新闻</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">google</span>
+<a href="https://news.google.com/rss/articles/CBMibmh0dHBzOi8vd3d3LmZveG5ld3MuY29tL2hlYWx0aC9hcnRpZmljaWFsLWludGVsbGlnZW5jZS1leHBlcnRzLXNoYXJlLWJpZ2dlc3QtYWktaW5ub3ZhdGlvbnMtMjAyMy1sYW5kbWFyay15ZWFy0gFyaHR0cHM6Ly93d3cuZm94bmV3cy5jb20vaGVhbHRoL2FydGlmaWNpYWwtaW50ZWxsaWdlbmNlLWV4cGVydHMtc2hhcmUtYmlnZ2VzdC1haS1pbm5vdmF0aW9ucy0yMDIzLWxhbmRtYXJrLXllYXIuYW1w?oc=5&hl=en-US&gl=US&ceid=US:en" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 2023年的6个最大人工智能创新</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">google</span>
 
- 本文讨论了人工通用智能（AGI）在放射肿瘤学领域的潜力。它探讨了AGI如何改进治疗计划和实施，以及提高患者预后的能力。AGI能够通过分析大量的医疗影像和患者数据，识别潜在的异常和风险因素，帮助放射肿瘤学专家做出更准确和个性化的治疗决策。AGI还可以为医生提供实时的指导和反馈，提高治疗的效果和安全性。然而，AGI的应用还面临一些挑战，包括数据隐私和伦理问题。将来，随着技术的进一步发展和医疗机构的支持，AGI有望在放射肿瘤学领域发挥重要作用，为患者带来更好的治疗效果和生存率。
+ 据《福克斯新闻》报道，人工智能专家预测2023年将成为人工智能创新的里程碑年。这些创新进展将广泛影响医疗保健、交通运输和娱乐等多个领域。预计人工智能技术将在医疗保健领域帮助提高疾病诊断的准确性和速度，并改善疾病预防和治疗方法。在交通运输领域，人工智能将推动自动驾驶技术的发展，提高交通安全性，并减少交通拥堵问题。而在娱乐领域，人工智能将为用户提供更加智能和个性化的娱乐体验。总之，人工智能的快速发展将为各个领域带来积极影响，并为我们的生活带来更多便利与创新。
 
-<a href="https://news.google.com/rss/articles/CBMibmh0dHBzOi8vd3d3LmZveG5ld3MuY29tL2hlYWx0aC9hcnRpZmljaWFsLWludGVsbGlnZW5jZS1leHBlcnRzLXNoYXJlLWJpZ2dlc3QtYWktaW5ub3ZhdGlvbnMtMjAyMy1sYW5kbWFyay15ZWFy0gFyaHR0cHM6Ly93d3cuZm94bmV3cy5jb20vaGVhbHRoL2FydGlmaWNpYWwtaW50ZWxsaWdlbmNlLWV4cGVydHMtc2hhcmUtYmlnZ2VzdC1haS1pbm5vdmF0aW9ucy0yMDIzLWxhbmRtYXJrLXllYXIuYW1w?oc=5&hl=en-US&gl=US&ceid=US:en" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 2023年人工智能领域的六个重要创新</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">google</span>
+<a href="https://news.google.com/rss/articles/CBMiY2h0dHBzOi8vd3d3Lm1lZGljYWx0ZWNob3V0bG9vay5jb20vbmV3cy91bnZlaWxpbmctZXZvbHZpbmctdHJlbmRzLWluLW1lZGljYWwtaW1hZ2luZy1ud2lkLTMxNzMuaHRtbNIBAA?oc=5&hl=en-US&gl=US&ceid=US:en" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 医学影像学中的不断变化趋势探析</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">google</span>
 
- 根据福克斯新闻的报道，人工智能专家预测2023年将成为人工智能创新的重要一年。这些创新将对医疗、交通和娱乐等各个领域产生影响。
+ 这篇文章着眼于医学影像学领域的发展趋势，重点介绍了该领域的进步和创新。医学影像学是一个关键的医疗领域，通过使用各种成像技术，如X射线、MRI和CT扫描等，可以帮助医生做出准确的诊断和治疗计划。近年来，医学影像学取得了巨大的进展，一方面是由于成像技术的快速发展，另一方面是由于计算机技术的应用。通过引入人工智能和机器学习算法，医学影像学的诊断能力大大提高，可以更准确地检测和识别疾病。此外，虚拟现实和增强现实技术的广泛应用也为医学影像学带来了新的可能性。总之，医学影像学将继续发展，为提高医疗诊断的准确性和效率做出重要贡献。
 
-<a href="https://machinelearning.apple.com//research/bootstrap-own-variance" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 方差引导</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">apple</span>
+<a href="https://machinelearning.apple.com//research/bootstrap-own-variance" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 自我引导：探索内在的自我认知之旅</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">apple</span>
 
- 本文介绍了一篇名为《Bootstrap Your Own Variance》的论文，该论文提出了一种名为BYOV的方法，它是将Bootstrap Your Own Latent（BYOL）和Bayes by Backprop（BBB）相结合的一种方法，用于估计模型的不确定性。研究人员发现，与确定性的BYOL基线相比，BYOV有所改进，并且在使用各种增强方法进行测试时具有更好的校准性和可靠性。这篇论文已被收录在NeurIPS 2023的自监督学习-理论与实践研讨会上。
+ 论文《自举你自己的方差》提出了一种称为BYOV的方法，将自举你自己的潜在（BYOL）与贝叶斯反向传播（BBB）相结合，用于估计模型的不确定性。研究人员发现，在使用各种增强技术进行测试时，BYOV相较于确定性的BYOL基线有所改进，提供了更好的校准性和可靠性。该论文于2023年在NeurIPS自监督学习理论与实践研讨会上被接收。
 
-<a href="https://blogs.nvidia.com/blog/av-2-0-wayve/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> AV 2.0：无人驾驶汽车的下一个重大突破</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">nvidia</span>
+<a href="https://blogs.nvidia.com/blog/av-2-0-wayve/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> AV 2.0：自动驾驶汽车的下一步发展</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">nvidia</span>
 
- 伦敦的自动驾驶技术公司Wayve正在领先于第二代自动驾驶车辆（AV 2.0）的发展。AV 2.0注重增强车内智能，并利用生成式人工智能来创造和模拟创新的驾驶场景。Wayve开发了名为GAIA-1的生成式世界模型和名为LINGO-1的人工智能模型，这些模型提升了人工智能驾驶模型的学习能力和可理解性。该公司致力于提高自动驾驶车辆的安全性，并认为智能化的人工智能将在未来的领域中起到重要作用。
+ 总部位于伦敦的自动驾驶技术公司Wayve，致力于推动下一代无人驾驶汽车AV 2.0的发展。AV 2.0注重车内智能，并利用生成型人工智能创建和模拟新颖的驾驶场景。Wayve已开发出GAIA-1，一个生成型世界模型，以及LINGO-1，一个提升AI驾驶模型学习和可解释性的AI模型。该公司的目标是提升自动驾驶汽车的安全性，并深信具身化人工智能将在未来的AI领域中扮演重要的角色。
 
-<a href="https://aws.amazon.com/blogs/machine-learning/welcome-to-a-new-era-of-building-in-the-cloud-with-generative-ai-on-aws/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> AWS云端构建：开启新时代的生成式人工智能</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">aws</span>
+<a href="https://aws.amazon.com/blogs/machine-learning/welcome-to-a-new-era-of-building-in-the-cloud-with-generative-ai-on-aws/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> AWS云端建筑：开创生成式人工智能的新时代</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">aws</span>
 
- AWS机器学习博客讨论了生成式人工智能在改变客户体验和业务方面的潜力。AWS提供了一套全面的功能，包括用于训练模型的基础设施、轻松访问模型和工具，以及具有颠覆性应用的能力。AWS推出了一些新的功能，例如用于训练大型模型的AWS Trainium2，以及Amazon Bedrock，客户可以选择行业领先的模型并使用自己的数据进行定制。此外，AWS还提供基于人工智能的编码工具Amazon CodeWhisperer和专门用于工作的生成式人工智能助手Amazon Q。
+ AWS机器学习博客讨论了生成式人工智能在改变客户体验和企业的潜力。AWS在生成式人工智能栈的三个层面上提供了一套全面的能力：模型训练的基础设施、易于访问的模型和工具，以及具有颠覆性的应用。AWS引入了一些新的功能，比如用于训练大规模模型的AWS Trainium2，以及允许客户选择行业领先的模型并用自己的数据进行定制的Amazon Bedrock。此外，AWS还提供了基于人工智能的编码工具Amazon CodeWhisperer和适用于工作的生成式人工智能助手Amazon Q。
 
-<a href="https://blogs.microsoft.com/blog/2023/12/14/microsoft-cloud-for-sovereignty-now-generally-available-opening-new-pathways-for-government-innovation/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 微软推出了全面的国产化云服务方案，助力政府创新发展</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">microsoft</span>
+总结：AWS机器学习博客讨论了生成式人工智能的潜力和应用。AWS提供了完整的生成式人工智能能力，包括模型训练的基础设施、易于访问的模型和工具，以及具有颠覆性的应用。最新引入的功能包括AWS Trainium2用于训练大规模模型，Amazon Bedrock允许客户选择行业领先的模型并进行定制。此外，AWS还提供了基于人工智能的编码工具Amazon CodeWhisperer和生成式人工智能助手Amazon Q。
 
- Microsoft云主权已在所有Azure区域全面提供。它提供治理、安全、透明和主权技术，满足政府在云上创新的同时，符合合规、安全和政策要求。客户能够实施策略，将数据限制在首选地理边界内，实现主权控制和保护敏感数据的加密。此外，Microsoft云主权还提供特定的Azure政策举措，以满足国家和地区的监管要求。荷兰国家网络安全中心和阿姆斯特丹市等组织已经采用了该服务。此外，Microsoft还引入了新功能，如漂移分析能力和透明度日志，进一步增强了超大规模云的主权性。
+<a href="https://blogs.microsoft.com/blog/2023/12/14/microsoft-cloud-for-sovereignty-now-generally-available-opening-new-pathways-for-government-innovation/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> Microsoft云与主权：开创政府创新新时代</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">microsoft</span>
 
-<a href="https://openai.com//research/overview" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 超级智能研究的路途</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">openai</span>
+ 微软云主权已在Azure全球范围内提供。它是一个帮助政府机构合规、安全、符合政策要求的云服务。它提供了治理、安全、透明度和主权技术，允许客户根据自己的要求限制数据存储在特定地理边界内。微软云主权还提供主权控制，以保护和加密敏感数据，并提供特定的Azure政策计划，满足国家和地区的监管要求。该服务已获得荷兰国家网络安全中心和阿姆斯特丹市等组织的采用。微软还推出了漂移分析工具和透明度日志等新功能，进一步提高超大规模云的主权性。
 
- OpenAI旨在开发人工通用智能（AGI）来解决人类水平的问题。他们专注于使强大的AI系统与人类意图对齐，并采用学习人类反馈等技术。OpenAI的研究包括构建用于文本、图像和音频生成的模型。他们已经成功开发出能够遵循用户意图并概括书籍的语言模型，以及能够从文字生成图像和创作音乐的神经网络。OpenAI的研究是基于之前的项目，并且他们正在积极招聘有才华的人才加入团队。
+<a href="https://openai.com//research/overview" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 开创性研究推动人工智能通向AGI的前进</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">openai</span>
 
-<a href="https://techcrunch.com/2023/12/20/fulfillment-is-still-hot-as-greyorange-closes-135m-round/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 履行服务行业持续火爆，GreyOrange公司成功融资1.35亿美元</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">techcrunch</span>
+ OpenAI致力于开发通用人工智能（AGI）系统，以解决人类水平问题。他们着重于构建强大的人工智能系统，以与人类意图相一致，并利用学习人类反馈等技术。OpenAI的研究领域包括文本、图像和音频的生成模型。他们已经成功开发了能够理解用户意图并概括书籍内容的语言模型，以及能够根据文本生成图像和作曲的神经网络。OpenAI的研究基于以前的项目，并正在寻找具有才华的个人加入他们的团队。
 
- 机器人公司GreyOrange是一家在仓储和履行解决方案方面专注的公司。他们最近成功完成了D轮融资，总额为1.35亿美元。这笔资金将用于提供全套解决方案，包括自主移动机器人和车队管理软件，以帮助客户优化仓库操作。GreyOrange正致力于为客户提供先进的系统，提高仓库效率并降低人力成本。通过这一融资，他们将进一步推动仓储自动化技术的发展，为行业带来更多创新和进步。
+<a href="https://techcrunch.com/2023/12/20/fulfillment-is-still-hot-as-greyorange-closes-135m-round/" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> GreyOrange获1.35亿美元资金，服务备受关注</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">techcrunch</span>
 
-<a href="https://paperswithcode.com/paper/prolificdreamer-high-fidelity-and-diverse" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 高保真度和多样化的文本生成方法</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">paperwc</span>
+ 仓储和物流解决方案提供商GreyOrange最近宣布完成了一轮D系列融资，融资金额为1.35亿美元。该公司致力于为仓库操作提供一套完整的解决方案，包括自主移动机器人和车队管理软件。这笔融资将用于为客户提供全面的系统解决方案。
 
- 本文介绍了一种名为变分得分蒸馏（VSD）的新方法，旨在改进文本到3D生成的效果。当前方法中存在的问题包括过度饱和、过度平滑和低多样性等，在此基础上，VSD将3D参数建模为一个随机变量，并引入基于颗粒的变分框架来解决这些问题。所提出的ProlificDreamer方法能够生成具有丰富结构和复杂效果的高分辨率、高保真度的3D模型。此外，本文还探讨了改进文本到3D生成的设计空间方法。通过此研究，我们可以期待更高质量的文本到3D生成技术的发展。
+<a href="https://paperswithcode.com/paper/prolificdreamer-high-fidelity-and-diverse" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 高保真和多样化：3D生成与变分分数蒸馏</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">paperwithcode</span>
 
-<a href="https://www.jiqizhixin.com//articles/2023-12-20-13" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> “数智说”论坛成功举办</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)">机器之心</span>
+ 本文介绍了一种名为变分得分蒸馏（VSD）的新方法，用于改进文本到3D生成的技术。目前的方法存在一些问题，比如过饱和、过平滑和低多样性等。为了解决这些问题，VSD将3D参数建模为随机变量，并通过基于粒子的变分框架进行优化。通过这种方法，ProlificDreamer可以生成高分辨率和高保真度的3D模型，具有丰富的结构和复杂的效果。该论文还对文本到3D生成的设计空间进行了改进的探索。
 
- 在上海成功举办了“数据智能”金融科技与数据集成论坛。该论坛汇集了来自大学、行业协会、金融机构、金融科技公司和数字供应链公司的代表，讨论金融科技创新和赋能。该活动由政府和行业组织共同组织，并包括数字金融、人工智能在金融领域的应用以及金融基础设施的转型等主题的演讲。该论坛旨在加强现代金融机构和基础设施的发展，更好地服务实体经济和技术创新。
+<a href="https://www.jiqizhixin.com//articles/2023-12-20-13" style="color: #2859C0; text-decoration: none; font-size: 14px;font-weight: bold;"> 数智说金融科技与数据融合论坛成功举办</a><span style="margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)">机器之心</span>
+
+ 上海举办了“数据智能”金融科技与数据融合论坛。来自大学、行业协会、金融机构、金融科技公司和数字供应链公司的代表汇聚一堂，共同研讨金融科技创新和赋能。此次论坛由政府和行业组织联合组织，涵盖了数字金融、人工智能在金融领域的应用以及金融基础设施转型等重要主题的演讲。目标在于加强现代金融机构和基础设施的发展，以更好地服务实体经济和技术创新。
 

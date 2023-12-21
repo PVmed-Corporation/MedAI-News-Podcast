@@ -36,7 +36,7 @@ def generate_md_summary(news_items, LLM_paper_summary, language):
     # 使用加载的实例
     markdown_all = " "
     markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
-    markdown_all += """## Key points of today news\n\n"""
+    markdown_all += """## Key Points of Today News\n\n"""
     markdown_all += LLM_paper_summary + '''\n\n'''
 
     for keys in news_items:
@@ -66,7 +66,7 @@ def generate_md_summary(news_items, LLM_paper_summary, language):
                     f"<a href=\"{link}\" style=\"color: #2859C0; text-decoration: none; "
                     f"font-size: 14px;font-weight: bold;\"> {title}</a>"
                     f"<span style=\"margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); "
-                    f"border-radius: 10px; font-size: 12px; color: rgb(251, 88, 88)\">{keys}</span>\n\n"
+                    f"border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)\">{keys}</span>\n\n"
                 )
 
                 markdown_all += html_snippet
