@@ -65,7 +65,7 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
                         title = news_items[keys].trans_title[ii]
                         content = news_items[keys].trans_content[ii]
                         markdown_all += generate_html_snippet(link, title, keys, content)
-
+            
             elif keys == "google": 
                 print(keys,"加入md文件")
                 markdown_all += """## News from Google \n\n"""
@@ -81,12 +81,13 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
                         title = news_items[keys].trans_title[ii]
                         content = news_items[keys].trans_content[ii]
                         markdown_all += generate_html_snippet(link, title, keys, content)
-
-            elif keys != "google" and keys != "arxiv" and not other_websites_added:
+                return markdown_all
+            
+            elif not other_websites_added: # keys != "google" and keys != "arxiv" and
                 markdown_all += """## News from Other Websites \n\n"""
                 other_websites_added = True  # 设置标志为 True，表示已添加过    
             
-            elif keys != "google" and keys != "arxiv":
+            else:  # keys != "google" and keys != "arxiv":
                 print(keys,"加入md文件")
                 
                 for ii, _ in enumerate(news_items[keys].title):
@@ -101,8 +102,7 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
                         title = news_items[keys].trans_title[ii]
                         content = news_items[keys].trans_content[ii]
                         markdown_all += generate_html_snippet(link, title, keys, content)
-            else:
-                pass
+
 
         with open(output_path, 'w', encoding='utf-8') as file:
             file.write(markdown_all)
