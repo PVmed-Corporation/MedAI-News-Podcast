@@ -44,7 +44,7 @@ def generate_md_summary(news_items, LLM_paper_summary, language):
     # 使用加载的实例
     markdown_all = " "
     markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
-    markdown_all += """## Key points of today's news\n\n"""
+    markdown_all += """## Key Points of Today's News\n\n"""
     markdown_all += LLM_paper_summary + '''\n\n'''
     # 后面作用于其他网站标题的
     other_websites_added = False  # 设置一个标志
