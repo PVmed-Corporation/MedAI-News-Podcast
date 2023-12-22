@@ -35,10 +35,9 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
 
         # TODO: yichuqu 将列表转换为DataFrame
         df = pd.DataFrame(data=output_list).set_index(["From","Title"])
-        with pd.ExcelWriter("web_sum_output.xlsx") as writer:
+        with pd.ExcelWriter(output_path) as writer:
             df.to_excel(writer) 
-        
-        return output_list
+        print("excel文件已生成: ", output_path) 
 
     else:
         # 使用加载的实例
@@ -81,7 +80,6 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
                         title = news_items[keys].trans_title[ii]
                         content = news_items[keys].trans_content[ii]
                         markdown_all += generate_html_snippet(link, title, keys, content)
-                return markdown_all
             
             elif not other_websites_added: # keys != "google" and keys != "arxiv" and
                 markdown_all += """## News from Other Websites \n\n"""
@@ -102,7 +100,6 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
                         title = news_items[keys].trans_title[ii]
                         content = news_items[keys].trans_content[ii]
                         markdown_all += generate_html_snippet(link, title, keys, content)
-
 
         with open(output_path, 'w', encoding='utf-8') as file:
             file.write(markdown_all)

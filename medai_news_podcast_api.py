@@ -30,7 +30,7 @@ class Source(object):
         self.trans_title.append(trans_title)
         self.trans_content.append(trans_content)
      
-def medai_news_podcast_api(websites, token_path, language="Chinese"):
+def medai_news_podcast_api(websites, token_path, language, output_folder, format):
 
     with open(token_path) as f:
             private_token = f.readline()
@@ -62,7 +62,6 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
 
         _web = Source(site.process_type)
         _web.get_page(web_link, web_title)
-        # new_web_link = {'web': site.url, 'url': web_link, 'title': web_title} # 'url'指的是文章的地址
 
         news_items[site.process_type] = _web
 
@@ -99,9 +98,12 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
 
     # 3. generate the podcast
     # 生成markdown文件
-    output_path = '/home/Richard/wangxi/MedAI-News-Podcast/output/md_output.md' # 输入结果保存的位置
-    format = 'markdown' # 输入输出的形式，可选excel或markdown
-    generate_result(news_items, language, LLM_paper_summary, format, output_path)
+    if format == 'markdown':
+        md_output_path = output_folder + language + '_markdown_output.md' # 输入结果保存的位置
+        generate_result(news_items, language, LLM_paper_summary, format, md_output_path)
+    else:
+        excel_output_path = output_folder + language +'excel_output.xlsx' # 输入结果保存的位置
+        generate_result(news_items, language, LLM_paper_summary, format, excel_output_path)       
     return
 
 if __name__ == '__main__':
@@ -129,7 +131,9 @@ if __name__ == '__main__':
     ]
     
     # language可以选择Chinese或English
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese')
+    # output_folder选择一个文件夹
+    # format可选markdown或excel
+    medai_news_podcast_api(websites, "config_file.txt", 'excel', 'output/', 'markdown')
 
 
 
