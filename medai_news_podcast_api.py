@@ -98,13 +98,11 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     # 3. generate the podcast
     # 生成markdown文件
-    if format == 'markdown':
-        md_output_path = output_folder + language + '_markdown_output.md' # 输入结果保存的位置
-        generate_result(news_items, language, LLM_paper_summary, format, md_output_path)
-    else:
-        excel_output_path = output_folder + language +'excel_output.xlsx' # 输入结果保存的位置
-        generate_result(news_items, language, LLM_paper_summary, format, excel_output_path)       
+    output_file_path = output_folder + language + '_'+ format + '_output.md'
+    generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
+    
     return
+
 
 if __name__ == '__main__':
     # 定义要爬取的网站信息
