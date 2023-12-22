@@ -105,10 +105,6 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     with open('test_files/source_instance.pkl', 'wb') as f:
         pickle.dump(source_instance, f)
 
-    # # 将字符串写入到文件
-    # with open('news_items.py', 'w') as file:
-    #     file.write(dict_string)
-
     # generate_df_summary(news_items, 'English')
     generate_md_summary(news_items, LLM_paper_summary, language)
     return
