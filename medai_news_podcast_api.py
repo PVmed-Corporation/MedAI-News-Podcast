@@ -32,7 +32,6 @@ class Source(object):
         self.trans_title.append(trans_title)
         self.trans_content.append(trans_content)
      
-
 def medai_news_podcast_api(websites, token_path, language="Chinese"):
 
     with open(token_path) as f:
@@ -71,8 +70,6 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
 
         print(f"在{site.process_type}网站爬取到的link和title是:\n{web_link}: {web_title}\n")
 
-
-
     # 2. summarize the content
     client = OpenAI(api_key=private_token)
     llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k", openai_api_key=private_token)
@@ -84,7 +81,6 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     summary_whole = []# [item['web_summarize'] for item in news_items]
     for keys in news_items:
         print("info from:", keys)
-        df = pd.DataFrame(columns=['from', 'Title', 'URL', 'Web_Summary'])
         for ii, _ in enumerate(news_items[keys].title):
             print(ii)
             print("url:", news_items[keys].url_link[ii])
@@ -106,8 +102,12 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     # 3. generate the podcast
     # 将实例保存到文件
     source_instance = news_items
-    with open('source_instance.pkl', 'wb') as f:
+    with open('test_files/source_instance.pkl', 'wb') as f:
         pickle.dump(source_instance, f)
+
+    # # 将字符串写入到文件
+    # with open('news_items.py', 'w') as file:
+    #     file.write(dict_string)
 
     # generate_df_summary(news_items, 'English')
     generate_md_summary(news_items, LLM_paper_summary, language)
@@ -121,14 +121,18 @@ if __name__ == '__main__':
     # 这里是可以一步获取标题和链接的
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
-        WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
-        WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
-        WebsiteInfo(url="https://aws.amazon.com/blogs/machine-learning/", tag_name="div", class_name="lb-col lb-mid-18 lb-tiny-24", process_type="aws"), # aws
-        WebsiteInfo(url="https://blogs.microsoft.com/", tag_name="a", class_name="f-post-link", process_type="microsoft"), # microsoft
-        WebsiteInfo(url="https://openai.com/", tag_name="a", class_name="ui-link group relative cursor-pointer", process_type="openai"), # openai_link
-        WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
+        WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
         WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
-        WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="机器之心") # 机器之心
+        WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
+        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        # # TODO --添加分词器
+        # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME") # natureBME
+        # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
+        # WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
+        # WebsiteInfo(url="https://aws.amazon.com/blogs/machine-learning/", tag_name="div", class_name="lb-col lb-mid-18 lb-tiny-24", process_type="aws"), # aws
+        # WebsiteInfo(url="https://blogs.microsoft.com/", tag_name="a", class_name="f-post-link", process_type="microsoft"), # microsoft
+        # WebsiteInfo(url="https://openai.com/", tag_name="a", class_name="ui-link group relative cursor-pointer", process_type="openai"), # openai_link
+        # WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
         # # TODO  Error code: 400
         # # WebsiteInfo(url="https://lexfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
     ]

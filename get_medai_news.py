@@ -144,6 +144,20 @@ def get_websit_info(url, tag_name, class_name, process_type):
                 print("Couldn't find the target post URL.")
                 raise ValueError  
         
+        # auntminnie
+        elif process_type == "auntminnie" or process_type == "mobihealthnews":
+            soup = BeautifulSoup(response.content, 'html.parser')   
+            a_tag = soup.find(class_=class_name).find(tag_name)
+            web_link = url + a_tag.get('href')
+            web_titile  = a_tag.get_text()
+
+        # natureBME
+        elif process_type == "natureBME" :
+            soup = BeautifulSoup(response.content, 'html.parser')   
+            a_tag = soup.find(class_=class_name).find(tag_name)
+            web_link = a_tag.get('href')
+            web_titile = a_tag.get_text()
+
         return web_link, web_titile   
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
