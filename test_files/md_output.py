@@ -24,7 +24,7 @@ class Source(object):
         self.trans_content.append(trans_content)
 
 # 从文件中加载实例
-with open('source_instance.pkl', 'rb') as f:
+with open('/home/Richard/wangxi/MedAI-News-Podcast/test_files/source_instance.pkl', 'rb') as f:
     news_items = pickle.load(f)
 
 def generate_html_snippet(link, title, keys, content):
@@ -35,7 +35,7 @@ def generate_html_snippet(link, title, keys, content):
         f"<span style=\"margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); "
         f"border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)\">{keys}</span>\n\n"
     )
-
+    
     markdown_part += html_snippet
     markdown_part += f"<span style='font-size: 14px; font-family: news-romans;'>{content}</span>\n\n"
     return markdown_part
@@ -50,6 +50,8 @@ def generate_md_summary(news_items, language):
         print({keys})
         # markdown_all += f"## From: {keys}\n"
         for ii, _ in enumerate(news_items[keys].title):
+            print("ii:", ii)
+            print("_:", _)
             if language == 'English':
                 link = news_items[keys].url_link[ii]
                 title = news_items[keys].title[ii]
@@ -57,7 +59,7 @@ def generate_md_summary(news_items, language):
             else:
                 link = news_items[keys].url_link[ii]
                 title = news_items[keys].trans_title[ii]
-                content = {news_items[keys].content[ii]}
+                content = news_items[keys].trans_content[ii]
                 markdown_all += generate_html_snippet(link, title, keys, content)
 
     with open('md_output.md', 'w', encoding='utf-8') as file:
@@ -67,6 +69,7 @@ def generate_md_summary(news_items, language):
     return
 
 generate_md_summary(news_items, "Chinese")
+
 # def generate_md_summary(news_items, language):
 #     # 使用加载的实例
 #     markdown_all = " "
