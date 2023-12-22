@@ -50,19 +50,16 @@ def generate_md_summary(news_items, LLM_paper_summary, language):
     other_websites_added = False  # 设置一个标志
 
     for keys in news_items:
-        print(keys)
         if keys == "arxiv": 
-            print(keys)
-            # markdown_all += f"## From: {keys}\n"
+            print(keys,"加入md文件")
             markdown_all += """## Paper from Arxiv \n\n"""
-            for ii, _ in enumerate(news_items[keys].title):
-                print("ii:", ii)
-                print("_:", _)
-                
+            for ii, _ in enumerate(news_items[keys].title):    
+
                 if language == 'English':
                     link = news_items[keys].url_link[ii]
                     title = news_items[keys].title[ii]
-                # TODO -- 待整理
+                    content = news_items[keys].content[ii]
+                    markdown_all += generate_html_snippet(link, title, keys, content)
                 else:
                     link = news_items[keys].url_link[ii]
                     title = news_items[keys].trans_title[ii]
@@ -70,19 +67,15 @@ def generate_md_summary(news_items, LLM_paper_summary, language):
                     markdown_all += generate_html_snippet(link, title, keys, content)
 
         elif keys == "google": 
-            print(keys)
-            # markdown_all += f"## From: {keys}\n"
+            print(keys,"加入md文件")
             markdown_all += """## News from Google \n\n"""
             for ii, _ in enumerate(news_items[keys].title):
-                print("ii:", ii)
-                print("_:", _)
                 
                 if language == 'English':
                     link = news_items[keys].url_link[ii]
                     title = news_items[keys].title[ii]
                     content = news_items[keys].content[ii]
                     markdown_all += generate_html_snippet(link, title, keys, content)
-                # TODO -- 待整理
                 else:
                     link = news_items[keys].url_link[ii]
                     title = news_items[keys].trans_title[ii]
@@ -94,8 +87,7 @@ def generate_md_summary(news_items, LLM_paper_summary, language):
             other_websites_added = True  # 设置标志为 True，表示已添加过
 
         elif keys != "google" and keys != "arxiv":
-            print(keys)
-            # markdown_all += f"## From: {keys}\n"
+            print(keys,"加入md文件")
             for ii, _ in enumerate(news_items[keys].title):
                 print("ii:", ii)
                 print("_:", _)
@@ -105,13 +97,13 @@ def generate_md_summary(news_items, LLM_paper_summary, language):
                     title = news_items[keys].title[ii]
                     content = news_items[keys].content[ii]
                     markdown_all += generate_html_snippet(link, title, keys, content)
-                # TODO -- 待整理
                 else:
                     link = news_items[keys].url_link[ii]
                     title = news_items[keys].trans_title[ii]
                     content = news_items[keys].trans_content[ii]
                     markdown_all += generate_html_snippet(link, title, keys, content)
 
+    # 输出结果
     with open('md_output.md', 'w', encoding='utf-8') as file:
         file.write(markdown_all)
         print("Markdown文件已生成：md_output.md")
