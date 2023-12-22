@@ -4,9 +4,7 @@ from get_medai_news import get_websit_info, get_arxiv_summary, \
 from summarize_medai_news import LLM_processing_content, generate_paper_summary
 from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
-import pandas as pd
-import xlsxwriter
-from generate_output import generate_df_summary, generate_md_summary
+from generate_output import generate_result
 import pickle
 
 class Source(object):
@@ -100,13 +98,10 @@ def medai_news_podcast_api(websites, token_path, language="Chinese"):
     print("LLM_paper_summary: \n", LLM_paper_summary)
 
     # 3. generate the podcast
-    # 将实例保存到文件
-    source_instance = news_items
-    with open('test_files/source_instance.pkl', 'wb') as f:
-        pickle.dump(source_instance, f)
-
     # 生成markdown文件
-    generate_md_summary(news_items, LLM_paper_summary, language)
+    output_path = '/home/Richard/wangxi/MedAI-News-Podcast/output/md_output.md' # 输入结果保存的位置
+    format = 'markdown' # 输入输出的形式，可选excel或markdown
+    generate_result(news_items, language, LLM_paper_summary, format, output_path)
     return
 
 if __name__ == '__main__':

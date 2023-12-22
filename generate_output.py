@@ -1,32 +1,4 @@
-# 使用pandas输出内容
-# 循环添加条目到列表中
 import pandas as pd
-def generate_df_summary(news_items, language):
-    output_list = []
-    for keys in news_items:
-        for ii, _ in enumerate(news_items[keys].title):
-            if language == 'English':
-                entry = {
-                    'From': keys,
-                    'Title': news_items[keys].title[ii],
-                    'URL': news_items[keys].url_link[ii],
-                    'Web_Summary': news_items[keys].content[ii]
-                }
-            else:
-                entry = {
-                    'From': keys,
-                    'Title': news_items[keys].trans_title[ii],
-                    'URL': news_items[keys].url_link[ii],
-                    'Web_Summary': news_items[keys].trans_content[ii]
-                }                        
-            output_list.append(entry)
-
-    # 将列表转换为DataFrame
-    df = pd.DataFrame(data=output_list).set_index(["From","Title"])
-    with pd.ExcelWriter("web_sum_output.xlsx") as writer:
-        df.to_excel(writer) 
-    print(df)
-    return
 
 def generate_html_snippet(link, title, keys, content):
     markdown_part = ''
@@ -40,72 +12,99 @@ def generate_html_snippet(link, title, keys, content):
     markdown_part += f"<span style='font-size: 14px; font-family: news-romans;'>{content}</span>\n\n"
     return markdown_part
 
-def generate_md_summary(news_items, LLM_paper_summary, language):
-    # 使用加载的实例
-    markdown_all = " "
-    markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
-    markdown_all += """## Key Points of Today's News\n\n"""
-    markdown_all += LLM_paper_summary + '''\n\n'''
-    # 后面作用于其他网站标题的
-    other_websites_added = False  # 设置一个标志
-
-    for keys in news_items:
-        if keys == "arxiv": 
-            print(keys,"加入md文件")
-            markdown_all += """## Paper from Arxiv \n\n"""
-            for ii, _ in enumerate(news_items[keys].title):    
-
-                if language == 'English':
-                    link = news_items[keys].url_link[ii]
-                    title = news_items[keys].title[ii]
-                    content = news_items[keys].content[ii]
-                    markdown_all += generate_html_snippet(link, title, keys, content)
-                else:
-                    link = news_items[keys].url_link[ii]
-                    title = news_items[keys].trans_title[ii]
-                    content = news_items[keys].trans_content[ii]
-                    markdown_all += generate_html_snippet(link, title, keys, content)
-
-        elif keys == "google": 
-            print(keys,"加入md文件")
-            markdown_all += """## News from Google \n\n"""
+def generate_result(news_items, language, LLM_paper_summary, format, output_path):
+    if format == "excel":
+        output_list = []
+        for keys in news_items:
             for ii, _ in enumerate(news_items[keys].title):
-                
                 if language == 'English':
-                    link = news_items[keys].url_link[ii]
-                    title = news_items[keys].title[ii]
-                    content = news_items[keys].content[ii]
-                    markdown_all += generate_html_snippet(link, title, keys, content)
+                    entry = {
+                        'From': keys,
+                        'Title': news_items[keys].title[ii],
+                        'URL': news_items[keys].url_link[ii],
+                        'Web_Summary': news_items[keys].content[ii]
+                    }
                 else:
-                    link = news_items[keys].url_link[ii]
-                    title = news_items[keys].trans_title[ii]
-                    content = news_items[keys].trans_content[ii]
-                    markdown_all += generate_html_snippet(link, title, keys, content)
+                    entry = {
+                        'From': keys,
+                        'Title': news_items[keys].trans_title[ii],
+                        'URL': news_items[keys].url_link[ii],
+                        'Web_Summary': news_items[keys].trans_content[ii]
+                    }                        
+                output_list.append(entry)
 
-        elif not other_websites_added:
-            markdown_all += """## News from Other Websites \n\n"""
-            other_websites_added = True  # 设置标志为 True，表示已添加过
+        # TODO: yichuqu 将列表转换为DataFrame
+        df = pd.DataFrame(data=output_list).set_index(["From","Title"])
+        with pd.ExcelWriter("web_sum_output.xlsx") as writer:
+            df.to_excel(writer) 
+        
+        return output_list
 
-        elif keys != "google" and keys != "arxiv":
-            print(keys,"加入md文件")
-            for ii, _ in enumerate(news_items[keys].title):
-                print("ii:", ii)
-                print("_:", _)
+    else:
+        # 使用加载的实例
+        markdown_all = " "
+        markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
+        markdown_all += """## Key Points of Today's News\n\n"""
+        markdown_all += LLM_paper_summary + '''\n\n'''
+        # 后面作用于其他网站标题的
+        other_websites_added = False  # 设置一个标志
+
+        for keys in news_items:
+            if keys == "arxiv": 
+                print(keys,"加入md文件")
+                markdown_all += """## Paper from Arxiv \n\n"""
+                for ii, _ in enumerate(news_items[keys].title):    
+
+                    if language == 'English':
+                        link = news_items[keys].url_link[ii]
+                        title = news_items[keys].title[ii]
+                        content = news_items[keys].content[ii]
+                        markdown_all += generate_html_snippet(link, title, keys, content)
+                    else:
+                        link = news_items[keys].url_link[ii]
+                        title = news_items[keys].trans_title[ii]
+                        content = news_items[keys].trans_content[ii]
+                        markdown_all += generate_html_snippet(link, title, keys, content)
+
+            elif keys == "google": 
+                print(keys,"加入md文件")
+                markdown_all += """## News from Google \n\n"""
+                for ii, _ in enumerate(news_items[keys].title):
+                    
+                    if language == 'English':
+                        link = news_items[keys].url_link[ii]
+                        title = news_items[keys].title[ii]
+                        content = news_items[keys].content[ii]
+                        markdown_all += generate_html_snippet(link, title, keys, content)
+                    else:
+                        link = news_items[keys].url_link[ii]
+                        title = news_items[keys].trans_title[ii]
+                        content = news_items[keys].trans_content[ii]
+                        markdown_all += generate_html_snippet(link, title, keys, content)
+
+            elif keys != "google" and keys != "arxiv" and not other_websites_added:
+                markdown_all += """## News from Other Websites \n\n"""
+                other_websites_added = True  # 设置标志为 True，表示已添加过    
+            
+            elif keys != "google" and keys != "arxiv":
+                print(keys,"加入md文件")
                 
-                if language == 'English':
-                    link = news_items[keys].url_link[ii]
-                    title = news_items[keys].title[ii]
-                    content = news_items[keys].content[ii]
-                    markdown_all += generate_html_snippet(link, title, keys, content)
-                else:
-                    link = news_items[keys].url_link[ii]
-                    title = news_items[keys].trans_title[ii]
-                    content = news_items[keys].trans_content[ii]
-                    markdown_all += generate_html_snippet(link, title, keys, content)
+                for ii, _ in enumerate(news_items[keys].title):
+                    
+                    if language == 'English':
+                        link = news_items[keys].url_link[ii]
+                        title = news_items[keys].title[ii]
+                        content = news_items[keys].content[ii]
+                        markdown_all += generate_html_snippet(link, title, keys, content)
+                    else:
+                        link = news_items[keys].url_link[ii]
+                        title = news_items[keys].trans_title[ii]
+                        content = news_items[keys].trans_content[ii]
+                        markdown_all += generate_html_snippet(link, title, keys, content)
+            else:
+                pass
 
-    # 输出结果
-    with open('md_output.md', 'w', encoding='utf-8') as file:
-        file.write(markdown_all)
-        print("Markdown文件已生成：md_output.md")
-
-    return
+        with open(output_path, 'w', encoding='utf-8') as file:
+            file.write(markdown_all)
+            print("Markdown文件已生成: ", output_path) 
+        return markdown_all

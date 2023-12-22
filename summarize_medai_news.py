@@ -13,20 +13,17 @@ system_message = ['You are a very talented editor, skilled at consolidatingfragm
                   'Compile the news article based on the information given.',
                   'You are a linguist, skilled in summarizing textual content and presenting'
                   ' it in 3 bullet points using markdown. ',
-                  '你是个翻译学家。要注意语言的流畅,通顺和中文的表达习惯。'
+                  '你是个翻译学家。要注意语言的流畅， 通顺和中文的表达习惯。'
                   '不要返回多余的和无关的信息，只把文字翻译成中文。',
-                  '你是个中文杂志编辑。要检查生成的标题中是否有乱码和无关信息，'
-                  '删除乱码和无关信息，生成流畅通顺的中文标题，保持内容的一致性'
-                  '直接返回结果,不要返回多余信息',
-                  '你是个中文杂志编辑。要检查并删除乱码和无关信息，'
-                  '生成一段中文总结，保持内容的一致性，不超过250字'
-                  '直接返回结果,不要返回多余信息',
-                  '你是个中文杂志编辑。要检查并删除乱码和无关信息，'
-                  '生成三个中文的要点，保持内容的一致性，不超过250字'
-                  '直接返回结果,不要返回多余信息'
+                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 你要检查并删除乱码和无关信息'
+                  '生成中文标题，保持内容的一致性直接返回报纸上呈现的标题， 不要返回多余信息',
+                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息,',
+                  '生成一段中文总结，保持内容的一致性,不超过250字'
+                  '直接返回返回报纸上应该有的报道,不要返回多余信息',
+                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息，'
+                  '生成三个中文的要点， 保持内容的一致性,不要返回多余信息'
                   
                     ]
-
 
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
     # Load the summarization chain
