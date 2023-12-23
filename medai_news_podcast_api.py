@@ -5,6 +5,7 @@ from summarize_medai_news import LLM_processing_content, generate_paper_summary
 from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 from generate_output import generate_result
+import time
 
 
 class Source(object):
@@ -100,7 +101,8 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     # 3. generate the podcast
     # 生成markdown文件
-    output_file_path = output_folder + language + '_'+ format + '_output.md'
+    _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+    output_file_path = output_folder + language + '_'+ _time + '_output.md'
     generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
     
     return
