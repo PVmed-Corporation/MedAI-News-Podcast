@@ -5,7 +5,7 @@ from summarize_medai_news import LLM_processing_content, generate_paper_summary
 from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 from generate_output import generate_result
-import pickle
+
 
 class Source(object):
     def __init__(self, name):
@@ -29,7 +29,8 @@ class Source(object):
     def get_trans_info(self, trans_title, trans_content):
         self.trans_title.append(trans_title)
         self.trans_content.append(trans_content)
-     
+
+
 def medai_news_podcast_api(websites, token_path, language, output_folder, format):
 
     with open(token_path) as f:
@@ -37,6 +38,12 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     # 1. collect the information
     news_items = {}
+    
+    # google news
+    query = 'medical imaging, AI'
+    _google = Source("google")
+    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
+    news_items["google"] = _google
     
     # arxiv直接调用api
     _arxiv = Source("arxiv")
@@ -48,12 +55,6 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # _youtb = Source("youtube")
     # get_youtube_dojo(_youtb, channel_id)
     # news_items["youtube"] = _youtb
-
-    # google news
-    query = 'medical imaging, AI'
-    _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
-    news_items["google"] = _google
 
     # 遍历网站信息列表并获取信息
     for site in websites:
@@ -76,11 +77,12 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     
     # 修改messages中的内容部分为全部网页的summary
     summary_whole = []# [item['web_summarize'] for item in news_items]
+    
     for keys in news_items:
         print("info from:", keys)
         for ii, _ in enumerate(news_items[keys].title):
             print(ii)
-            print("url:", news_items[keys].url_link[ii])
+            # print("url:", news_items[keys].url_link[ii])
             # update summary
             if keys in ["google","openai","nvidia","apple"]:
                 summary_whole.append(news_items[keys].content[ii])
@@ -131,7 +133,7 @@ if __name__ == '__main__':
     # language可以选择Chinese或English
     # output_folder选择一个文件夹
     # format可选markdown或excel
-    medai_news_podcast_api(websites, "config_file.txt", 'excel', 'output/', 'markdown')
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown')
 
 
 
