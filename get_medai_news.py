@@ -167,7 +167,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
 # 使用内置包的函数
 def get_arxiv_summary(_arxiv, max_results):
     search = arxiv.Search(
-        query="medical imaging, CV, deeep learning",
+        query="medical imaging, CV, MRI, deeep learning",
         #max_results=st.session_state.arxiv,
         max_results=max_results,
         sort_by=arxiv.SortCriterion.SubmittedDate
@@ -193,7 +193,7 @@ def get_youtube_dojo(_youtb, channel_id):
     return
 
 
-def fetch_gnews_links(_google, query, max_results=5):
+def fetch_gnews_links(_google, query, max_results=3):
     # 初始化 GNews
     google_news = GNews(language='en', country='cn', period='1d',
                         start_date=None, end_date=None,

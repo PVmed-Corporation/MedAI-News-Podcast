@@ -14,8 +14,8 @@ def generate_html_snippet(news_items, keys, language, ):
             content = news_items[keys].trans_content[ii]
         
         html_snippet = (
-            f"<a href=\"{link}\" style=\"color: #2859C0; text-decoration: none; "
-            f"font-size: 14px; font-weight: bold; font-family: Arial;\"> {title}</a>"
+            f"### <a href=\"{link}\" style=\"color: #2859C0; text-decoration: none; "
+            f"font-size: 15px; font-weight: bold; font-family: Arial;\"> {title}</a>"
             f"<span style=\"margin-left: 5px; background-color: white; padding: 0px 7px; border: 1px solid rgb(251, 88, 88); "
             f"border-radius: 11px; font-size: 10px; color: rgb(251, 88, 88)\">{keys}</span>\n\n"
         )
@@ -57,6 +57,7 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
         # 使用加载的实例
         markdown_all = " "
         markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
+        markdown_all += """[TOC]\n\n"""
         markdown_all += """## Key Points of Today's News\n\n"""
         markdown_all += LLM_paper_summary + '''\n\n'''
 

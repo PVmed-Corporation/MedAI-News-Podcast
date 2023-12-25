@@ -48,7 +48,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     
     # arxiv直接调用api
     _arxiv = Source("arxiv")
-    get_arxiv_summary(_arxiv, max_results=3) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, max_results=5) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     
     # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
@@ -129,7 +129,7 @@ if __name__ == '__main__':
         # WebsiteInfo(url="https://openai.com/", tag_name="a", class_name="ui-link group relative cursor-pointer", process_type="openai"), # openai_link
         # WebsiteInfo(url="https://techcrunch.com/category/artificial-intelligence/", tag_name="", class_name="", process_type="techcrunch"), # techcrunch频道
         # # TODO  Error code: 400
-        # # WebsiteInfo(url="https://lexfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
+        # # WebsiteInfo(url="https://le4ews xfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
     ]
     
     # language可以选择Chinese或English
