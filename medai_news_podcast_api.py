@@ -102,7 +102,10 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # 3. generate the podcast
     # 生成markdown文件
     _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
-    output_file_path = output_folder + language + '_'+ _time + '_output.md'
+    if format == 'excel':
+        output_file_path = output_folder + language + '_'+ _time + '_output.xlsx'
+    else:
+        output_file_path = output_folder + language + '_'+ _time + '_output.md'
     generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
     
     return
@@ -135,7 +138,7 @@ if __name__ == '__main__':
     # language可以选择Chinese或English
     # output_folder选择一个文件夹
     # format可选markdown或excel
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown')
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'excel')
 
 
 
