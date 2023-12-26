@@ -122,10 +122,23 @@ def get_websit_info(url, tag_name, class_name, process_type):
             else:
                 print("Couldn't find the target post URL.")
                 raise ValueError
-        
+
+        # 爬取机器之心信息
+        elif process_type == "机器之心":  
+            articles = soup.find(class_=class_name).find("a")
+            web_time = soup.find('time', class_='js-time-ago').get_text(strip=True)
+            if articles:                
+                web_titile = articles.get('alt')
+                web_link = url + articles.get('href')
+            else:
+                print("Couldn't find the target post URL.")
+                raise ValueError  
+                    
         # 爬取paper with code信息
         elif process_type == "paperwithcode":  
             articles = soup.find(class_=class_name).find('h1')
+            web_time = soup.find(class_=class_name).find('span', class_='author-name-text item-date-pub').get_text()
+            print("articles:", articles)
             if articles:
                 # 提取 href 值和标题文本
                 web_link = url + articles.a['href']
@@ -133,23 +146,26 @@ def get_websit_info(url, tag_name, class_name, process_type):
             else:
                 print("Couldn't find the target post URL.")
                 raise ValueError        
-        
-        # 爬取机器之心信息
-        elif process_type == "机器之心":  
-            articles = soup.find(class_=class_name).find("a")
-            if articles:                
-                web_titile = articles.get('alt')
-                web_link = url + articles.get('href')
-            else:
-                print("Couldn't find the target post URL.")
-                raise ValueError  
-        
+         
         # auntminnie
-        elif process_type == "auntminnie" or process_type == "mobihealthnews":
+        elif process_type == "auntminnie":
             soup = BeautifulSoup(response.content, 'html.parser')   
             a_tag = soup.find(class_=class_name).find(tag_name)
             web_link = url + a_tag.get('href')
             web_titile  = a_tag.get_text()
+            # 获取时间
+            response = requests.get(web_link, headers=headers)
+            response.encoding = response.apparent_encoding
+            soup = BeautifulSoup(response.content, 'html.parser')
+            web_time = soup.find(class_="author-published-node__content-published").get_text()
+
+        # auntminnie
+        elif process_type == "mobihealthnews":
+            soup = BeautifulSoup(response.content, 'html.parser')   
+            a_tag = soup.find(class_=class_name).find(tag_name)
+            web_link = url + a_tag.get('href')
+            web_titile = a_tag.get_text()
+            web_time = soup.find('ul', class_='sponsored-author-create top-story').find('li', class_="last").get_text(strip=True)
 
         # natureBME
         elif process_type == "natureBME" :
@@ -158,7 +174,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
             web_link = a_tag.get('href')
             web_titile = a_tag.get_text()
 
-        return web_link, web_titile   
+        return web_link, web_titile, web_time   
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
         raise ValueError
