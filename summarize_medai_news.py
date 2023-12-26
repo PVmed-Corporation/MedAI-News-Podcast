@@ -7,22 +7,34 @@ messages = [{'role': 'system',
             {'role': 'user',
              'content': 'it should be content or title'}, ]
 
-system_message = ['You are a very talented editor, skilled at consolidatingfragmented'
-                  'information and introductions into a cohesive script, without missing'
-                  'any details, control the content about 100 words. '
-                  'Compile the news article based on the information given.',
-                  'You are a linguist, skilled in summarizing textual content and presenting'
-                  ' it in 3 bullet points using markdown. ',
-                  '你是个翻译学家。要注意语言的流畅， 通顺和中文的表达习惯。'
-                  '不要返回多余的和无关的信息，只把文字翻译成中文。',
-                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 你要检查并删除乱码和无关信息'
-                  '生成中文标题，保持内容的一致性直接返回报纸上呈现的标题， 不要返回多余信息，无法翻译的英文保持原文',
-                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息,',
-                  '生成一段中文总结，保持内容的一致性,不超过250字'
-                  '直接返回返回报纸上应该有的报道,不要返回多余信息',
-                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息，'
-                  '生成三个中文的要点， 保持内容的一致性,不要返回多余信息'               
-                    ]
+system_messages = {
+    'English': [
+        'Summarize the content provided below in a concise manner. Assemble a coherent '
+        'script by adeptly consolidating fragmented information and introductions without' 
+        'overlooking details. Aim for approximately 100 words and compile a news article'
+        'from the given information.',
+        'You are a linguist, skilled in summarizing textual content and presenting '
+        'it in 3 bullet points using markdown.'
+    ],
+    'Chinese': [
+        
+        '你是一位翻译专家。请注意语言流畅、连贯性和中文表达习惯。避免多余或不相关的信息，'
+        '专注于将文字翻译成中文。生成的结果需符合新闻格式规范，突出文章核心内容于开篇。',
+        '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 你要检查并删除乱码和无关信息 '
+        '生成中文标题，保持内容的一致性直接返回报纸上呈现的标题， 不要返回多余信息，无法翻译的英文保持原文',
+        '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息, '
+        '生成一段中文总结，保持内容的一致性,不超过250字 '
+        '直接返回返回报纸上应该有的报道,不要返回多余信息',
+        '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息， '
+        '生成三个中文的要点， 保持内容的一致性,不要返回多余信息'
+    ],
+
+    'Key':[ '针对以下内容，提炼出2-5个关键词，以简洁方式概括其要点'
+
+    ]
+    
+}
+
 
 
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
@@ -45,7 +57,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
 
             if language == 'Chinese': 
                 # 提取messsage中内容部分翻译网页信息为中文
-                messages[0]['content'] = system_message[2]
+                messages[0]['content'] = system_messages['Chinese'][0]
                 messages[1]['content'] = item.content[index]
 
                 # TODO --最后输入实际是messages这个列表
@@ -70,7 +82,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 # web_chinese_r = response.choices[0].message.content
                 
                 # 提取messsage中标题部分翻译网页信息为中文
-                messages[0]['content'] = system_message[3]
+                messages[0]['content'] = system_messages['Chinese'][1]
                 messages[1]['content'] = item.title[index]
                 response = client.chat.completions.create(
                                 model="gpt-3.5-turbo-16k",
@@ -99,7 +111,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
 
 def generate_paper_summary(client, info2summarize, language):
     # 归纳摘要前修改messages中的系统提示为system_message_0
-    messages[0]['content'] = system_message[0]
+    messages[0]['content'] = system_messages['English'][0]
     messages[1]['content'] = str(info2summarize)
     
     response = client.chat.completions.create(
@@ -113,7 +125,7 @@ def generate_paper_summary(client, info2summarize, language):
     # 生成3个key points
     # 生成key points前修改messages中的系统提示为system_message_1
     # 输入应为上一段整理好的信息
-    messages[0]['content'] = system_message[1]
+    messages[0]['content'] = system_messages['English'][1]
     messages[1]['content'] = generate_paper_summary
 
     response = client.chat.completions.create(
@@ -126,7 +138,7 @@ def generate_paper_summary(client, info2summarize, language):
     
     if language == 'Chinese':
         # 生成key points前修改messages中的系统提示为system_message_2
-        messages[0]['content'] = system_message[2]
+        messages[0]['content'] = system_messages['Chinese'][1]
         messages[1]['content'] = generate_key_points
         
         response = client.chat.completions.create(

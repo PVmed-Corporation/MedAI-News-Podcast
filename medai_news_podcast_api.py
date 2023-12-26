@@ -95,7 +95,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     LLM_processing_content(llm, client, news_items, language)
     
     # 修改messages中的内容部分为全部网页的summary
-    summary_whole = []# [item['web_summarize'] for item in news_items]
+    summary_whole = [] # [item['web_summarize'] for item in news_items]
     
     for keys in news_items:
         print("info from:", keys)
