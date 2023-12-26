@@ -190,7 +190,7 @@ def get_arxiv_summary(_arxiv, query, max_results):
     )
     
     for result in search.results():
-        _arxiv.get_page(result.entry_id, result.title)
+        _arxiv.get_page(result.entry_id, result.title, result.published)
         # _arxiv.get_content(result.summary)
 
     return
@@ -217,7 +217,7 @@ def fetch_gnews_links(_google, query, max_results=3):
     # 根据query获取新闻
     news_items = google_news.get_news(query)
     for gn in news_items:
-        _google.get_page(gn.get('url'), gn.get('title'))
+        _google.get_page(gn.get('url'), gn.get('title'), gn.get('published date'))
         
     return
 

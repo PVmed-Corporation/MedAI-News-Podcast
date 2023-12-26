@@ -44,16 +44,16 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     news_items = {}
     
     # # google news
-    # query = 'medical imaging, AI medical imaging techniques'
-    # _google = Source("google")
-    # fetch_gnews_links(_google, query, max_results=1) # max_results可以自由改动
-    # news_items["google"] = _google
+    query = 'medical imaging, AI medical imaging techniques'
+    _google = Source("google")
+    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
+    news_items["google"] = _google
     
     # # arxiv直接调用api
-    # _arxiv = Source("arxiv")
-    # query = '/medical imaging/AI medical imaging techniques/'
-    # get_arxiv_summary(_arxiv, query, max_results=1) # max_results可以自由改动
-    # news_items["arxiv"] = _arxiv
+    _arxiv = Source("arxiv")
+    query = '/medical imaging/AI medical imaging techniques/'
+    get_arxiv_summary(_arxiv, query, max_results=3) # max_results可以自由改动
+    news_items["arxiv"] = _arxiv
     '''
     attempts = 2
     while attempts > 0:
@@ -157,9 +157,9 @@ if __name__ == '__main__':
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
         WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
-        WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
-        WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        # WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
+        # WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
+        # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
         # # # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME") # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
