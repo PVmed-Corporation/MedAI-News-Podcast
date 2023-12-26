@@ -57,17 +57,17 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                             )
                 web_chinese = response.choices[0].message.content
 
-                # 检查信息正确
-                messages[0]['content'] = system_message[4]
-                messages[1]['content'] = web_chinese
+                # # 检查信息正确
+                # messages[0]['content'] = system_message[4]
+                # messages[1]['content'] = web_chinese
 
-                response = client.chat.completions.create(
-                                model="gpt-3.5-turbo-16k",
-                                messages=messages,
-                                temperature=1.0,
-                                max_tokens=2048,
-                            )
-                web_chinese_r = response.choices[0].message.content
+                # response = client.chat.completions.create(
+                #                 model="gpt-3.5-turbo-16k",
+                #                 messages=messages,
+                #                 temperature=1.0,
+                #                 max_tokens=2048,
+                #             )
+                # web_chinese_r = response.choices[0].message.content
                 
                 # 提取messsage中标题部分翻译网页信息为中文
                 messages[0]['content'] = system_message[3]
@@ -92,7 +92,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 # title_chinese_r = response.choices[0].message.content
                 
                 # add the translation version to collector
-                item.get_trans_info(title_chinese, web_chinese_r)
+                item.get_trans_info(title_chinese, web_chinese)
     
     return
 

@@ -57,7 +57,6 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
         # 使用加载的实例
         markdown_all = " "
         markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
-        markdown_all += """[TOC]\n\n"""
         markdown_all += """## Key Points of Today's News\n\n"""
         markdown_all += LLM_paper_summary + '''\n\n'''
 
