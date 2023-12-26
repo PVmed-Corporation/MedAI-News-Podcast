@@ -9,9 +9,11 @@ def generate_html_snippet(news_items, keys, language, ):
         if language == 'English':
             title = news_items[keys].title[ii]
             content = news_items[keys].content[ii]
+            web_time = news_items[keys].web_time[ii]
         else:
             title = news_items[keys].trans_title[ii]
             content = news_items[keys].trans_content[ii]
+            web_time = news_items[keys].web_time[ii]
         
         html_snippet = (
             f"### <a href=\"{link}\" style=\"color: #2859C0; text-decoration: none; "
@@ -21,7 +23,9 @@ def generate_html_snippet(news_items, keys, language, ):
         )
         
         markdown_part += html_snippet
+        markdown_part += f"<span style='font-size: 10px; font-family: news-romans;'>{web_time}</span>\n\n"
         markdown_part += f"<span style='font-size: 14px; font-family: news-romans;'>{content}</span>\n\n"
+        
     
     return markdown_part
 

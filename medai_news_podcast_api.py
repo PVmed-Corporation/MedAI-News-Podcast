@@ -52,7 +52,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # # arxiv直接调用api
     _arxiv = Source("arxiv")
     query = '/medical imaging/AI medical imaging techniques/'
-    get_arxiv_summary(_arxiv, query, max_results=3) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, query, max_results=2) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     '''
     attempts = 2
@@ -68,7 +68,6 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
         time.sleep(1)
         attempts -= 1
     '''
-
     
     # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
     # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
@@ -86,14 +85,14 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
         news_items[site.process_type] = _web
 
-        print(f"在{site.process_type}网站爬取到的link和title和time是:\n{web_link}: {web_title}\n发布时间是: {web_time}\n")
+        print(f"在{site.process_type}网站爬取到的link和title和time是:\n{web_link}: {web_title}\n 发布时间是: {web_time}\n")
 
     # 2. summarize the content
     client = OpenAI(api_key=private_token)
     llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k", openai_api_key=private_token)
     
     # 生成每篇文章的summary
-    # LLM_processing_content(llm, client, news_items, language)
+    LLM_processing_content(llm, client, news_items, language)
     
     # 修改messages中的内容部分为全部网页的summary
     summary_whole = []# [item['web_summarize'] for item in news_items]
@@ -101,14 +100,14 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     for keys in news_items:
         print("info from:", keys)
         print("info news_items[keys].title:", news_items[keys].title)
-
+        '''
         # Check the lengths of the lists
         title_len = len(news_items[keys].title) if hasattr(news_items[keys], 'title') else 0
         trans_title_len = len(news_items[keys].trans_title) if hasattr(news_items[keys], 'trans_title') else 0
         web_time_len = len(news_items[keys].web_time) if hasattr(news_items[keys], 'web_time') else 0
         content_len = len(news_items[keys].content) if hasattr(news_items[keys], 'content') else 0
         trans_content_len = len(news_items[keys].trans_content) if hasattr(news_items[keys], 'trans_content') else 0
-
+        
         print("Length of title:", title_len)
         print("Length of trans_title:", trans_title_len)
         print("Length of web_time:", web_time_len)
@@ -131,19 +130,19 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
                 print("title:", news_items[keys].trans_title[ii])
                 print("web_time:", news_items[keys].web_time[ii])
                 print("web_summarize:", news_items[keys].trans_content[ii])
-        '''
-    # # 提取所有信息里面的关键放在开头
-    # LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
-    # print("LLM_paper_summary: \n", LLM_paper_summary)
+        
+    # 提取所有信息里面的关键放在开头
+    LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
+    print("LLM_paper_summary: \n", LLM_paper_summary)
 
-    # # 3. generate the podcast
-    # # 生成markdown文件
-    # _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
-    # if format == 'excel':
-    #     output_file_path = output_folder + language + '_'+ _time + '_output.xlsx'
-    # else:
-    #     output_file_path = output_folder + language + '_'+ _time + '_output.md'
-    # generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
+    # 3. generate the podcast
+    # 生成markdown文件
+    _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+    if format == 'excel':
+        output_file_path = output_folder + language + '_'+ _time + '_output.xlsx'
+    else:
+        output_file_path = output_folder + language + '_'+ _time + '_output.md'
+    generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
     
     return
 
@@ -157,9 +156,9 @@ if __name__ == '__main__':
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
         WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
-        # WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
-        # WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
+        WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
+        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
         # # # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME") # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
