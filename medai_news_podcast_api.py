@@ -44,14 +44,26 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     news_items = {}
     
     # # google news
-    query = 'MRI, medical imaging, AI medical imaging techniques'
+    query = "(medical imaging AND AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
+    # query = ('("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV)'
+    #         '("cardiac" AND (eess.IV OR cs.CV)) '
+    #         'OR ("tumor" AND (eess.IV OR cs.CV OR cs.AI)) OR ("bone" AND (eess.IV OR cs.CV OR cs.AI)) OR ("spinal" AND (eess.IV OR cs.CV OR cs.AI))'
+    #         'OR ("medical image" AND cs.AI) OR ("MRI" AND cs.AI) OR ("CT" AND cs.AI)'
+    #         'OR ("Ultrasound" (eess.IV OR cs.CV)) OR ("Radiography" AND (eess.IV OR cs.CV))'
+    #         'OR ("medical" AND "Image Segmentation") OR ("medical image" AND "deep learning")')
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
     news_items["google"] = _google
     
     # # arxiv直接调用api
     _arxiv = Source("arxiv")
-    query = '/MRI/medical imaging/AI medical imaging techniques/'
+
+    # query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR (cardiac image AND (eess.IV OR cs.CV)) OR ("tumor" AND (eess.IV OR cs.CV OR cs.AI)) OR ("bone" AND (eess.IV OR cs.CV OR cs.AI)) OR ("spinal" AND (eess.IV OR cs.CV OR cs.AI)) OR ("medical image" AND cs.AI) OR ("MRI" AND cs.AI) OR ("CT" AND cs.AI) OR ("Ultrasound" (eess.IV OR cs.CV)) OR ("Radiography" AND (eess.IV OR cs.CV))'
+    # query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("tumor" AND (eess.IV OR cs.CV OR)) OR ("bone" AND (eess.IV OR cs.CV) OR '
+    # '("medical image" AND cs.AI) OR ("Ultrasound" AND (eess.IV OR cs.CV)) OR ("Radiography" AND (eess.IV OR cs.CV))'
+
+    query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI)' 
+
     get_arxiv_summary(_arxiv, query, max_results=5) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     '''

@@ -18,7 +18,7 @@ def generate_html_snippet(news_items, keys, language, ):
         html_snippet = (
             f"### <a href=\"{link}\" style=\"color: #2859C0; text-decoration: none; "
             f"font-size: 17px; font-weight: bold; font-family: Arial;\"> {title}</a>"
-            f"<span style=\"margin-left: 7px; background-color: white; padding: 0px 8px; border: 1px solid rgb(251, 88, 88); "
+            f"<span style=\"margin-left: 7px; background-color: white; padding: 0px 8px; border: 1px solid rgb(251, 88, 88)"
             f"border-radius: 13px; font-size: 12px; color: rgb(251, 88, 88)\">{keys}</span>\n\n"
         )
         
@@ -62,7 +62,7 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
         markdown_all = " "
         markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
         markdown_all += """## Key Points of Today's News\n\n"""
-        markdown_all += """<hr style="border-top: 1px solid lightgrey;">\n\n"""
+
         markdown_all += LLM_paper_summary + '''\n\n'''
 
         # 正文的信息排版
@@ -70,12 +70,12 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
             print(keys,"加入md文件")
             if ii<2:
                 markdown_all += f"""## Paper from {keys} \n\n"""
-                markdown_all += """<hr style="border-top: 1px solid lightgrey;">\n\n"""
+
                 markdown_all += generate_html_snippet(news_items, keys, language)
             else:
                 if ii == 2:
                     markdown_all += """## News from Other Websites \n\n"""
-                    markdown_all += """<hr style="border-top: 1px solid lightgrey;">\n\n"""
+
                 markdown_all += generate_html_snippet(news_items, keys, language)
 
         with open(output_path, 'w', encoding='utf-8') as file:
