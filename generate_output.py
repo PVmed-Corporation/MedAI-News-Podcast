@@ -62,7 +62,7 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
         markdown_all = " "
         markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
         markdown_all += """## Key Points of Today's News\n\n"""
-        markdown_all += """<hr style="border-top: 1px solid black;">\n\n"""
+        markdown_all += """<hr style="border-top: 1px solid lightgrey;">\n\n"""
         markdown_all += LLM_paper_summary + '''\n\n'''
 
         # 正文的信息排版
@@ -75,7 +75,7 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
             else:
                 if ii == 2:
                     markdown_all += """## News from Other Websites \n\n"""
-                    markdown_all += """<hr style="border-top: 1px solid black;">\n\n"""
+                    markdown_all += """<hr style="border-top: 1px solid lightgrey;">\n\n"""
                 markdown_all += generate_html_snippet(news_items, keys, language)
 
         with open(output_path, 'w', encoding='utf-8') as file:

@@ -4,7 +4,7 @@ import arxiv
 from gnews import GNews
 # from pytube import Playlist
 from youtubesearchpython import Playlist, playlist_from_channel_id
-
+from dateutil import parser
     
 # 使用requests和beautifulsoup的函数
 def get_websit_info(url, tag_name, class_name, process_type):
@@ -127,6 +127,8 @@ def get_websit_info(url, tag_name, class_name, process_type):
         elif process_type == "机器之心":  
             articles = soup.find(class_=class_name).find("a")
             web_time = soup.find('time', class_='js-time-ago').get_text(strip=True)
+            parsed_date = parser.parse(web_time)
+            web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
             if articles:                
                 web_titile = articles.get('alt')
                 web_link = url + articles.get('href')
@@ -138,6 +140,8 @@ def get_websit_info(url, tag_name, class_name, process_type):
         elif process_type == "paperwithcode":  
             articles = soup.find(class_=class_name).find('h1')
             web_time = soup.find(class_=class_name).find('span', class_='author-name-text item-date-pub').get_text()
+            parsed_date = parser.parse(web_time)
+            web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
             print("articles:", articles)
             if articles:
                 # 提取 href 值和标题文本
@@ -158,6 +162,8 @@ def get_websit_info(url, tag_name, class_name, process_type):
             response.encoding = response.apparent_encoding
             soup = BeautifulSoup(response.content, 'html.parser')
             web_time = soup.find(class_="author-published-node__content-published").get_text()
+            parsed_date = parser.parse(web_time)
+            web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
 
         # auntminnie
         elif process_type == "mobihealthnews":
@@ -166,6 +172,8 @@ def get_websit_info(url, tag_name, class_name, process_type):
             web_link = url + a_tag.get('href')
             web_titile = a_tag.get_text()
             web_time = soup.find('ul', class_='sponsored-author-create top-story').find('li', class_="last").get_text(strip=True)
+            parsed_date = parser.parse(web_time)
+            web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
 
         # natureBME
         elif process_type == "natureBME" :
@@ -190,7 +198,9 @@ def get_arxiv_summary(_arxiv, query, max_results):
     )
     
     for result in search.results():
-        _arxiv.get_page(result.entry_id, result.title, result.published)
+        parsed_date = parser.parse(str(result.published))
+        web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
+        _arxiv.get_page(result.entry_id, result.title, web_time)
         # _arxiv.get_content(result.summary)
 
     return
@@ -217,7 +227,9 @@ def fetch_gnews_links(_google, query, max_results=3):
     # 根据query获取新闻
     news_items = google_news.get_news(query)
     for gn in news_items:
-        _google.get_page(gn.get('url'), gn.get('title'), gn.get('published date'))
+        parsed_date = parser.parse(gn.get('published date'))
+        web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
+        _google.get_page(gn.get('url'), gn.get('title'), web_time)
         
     return
 

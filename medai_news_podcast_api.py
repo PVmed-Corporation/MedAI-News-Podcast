@@ -44,15 +44,15 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     news_items = {}
     
     # # google news
-    query = 'medical imaging, AI medical imaging techniques'
+    query = 'MRI, medical imaging, AI medical imaging techniques'
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
     news_items["google"] = _google
     
     # # arxiv直接调用api
     _arxiv = Source("arxiv")
-    query = '/medical imaging/AI medical imaging techniques/'
-    get_arxiv_summary(_arxiv, query, max_results=2) # max_results可以自由改动
+    query = '/MRI/medical imaging/AI medical imaging techniques/'
+    get_arxiv_summary(_arxiv, query, max_results=5) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     '''
     attempts = 2
@@ -119,7 +119,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
             print(ii)
             # print("url:", news_items[keys].url_link[ii])
             # update summary
-            if keys in ["google","openai","nvidia","apple"]:
+            if keys in ["google","auntminnie","机器之心"]:
                 summary_whole.append(news_items[keys].content[ii])
 
             if language == 'English':
