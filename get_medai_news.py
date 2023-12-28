@@ -243,6 +243,8 @@ def fetch_gnews_links(_google, query, max_results=3):
     for gn in news_items:
         web_time = unify_time(gn.get('published date'))
         _google.get_page(gn.get('url'), gn.get('title'), web_time)
-        
-    return
+        article = google_news.get_full_article(gn['url'])
+        # print("gnews article:", article.text)
+        _google.get_content(article.text)
 
+    return article

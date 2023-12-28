@@ -47,22 +47,17 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     query = "medical imaging news OR medical AND image processing technology)"
 
     # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
-
+    
     _google = Source("google")
     fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
     news_items["google"] = _google
     
-    # # arxiv直接调用api
-    _arxiv = Source("arxiv")
+    # # # arxiv直接调用api
+    # _arxiv = Source("arxiv")
+    # query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI)' 
 
-    # query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR (cardiac image AND (eess.IV OR cs.CV)) OR ("tumor" AND (eess.IV OR cs.CV OR cs.AI)) OR ("bone" AND (eess.IV OR cs.CV OR cs.AI)) OR ("spinal" AND (eess.IV OR cs.CV OR cs.AI)) OR ("medical image" AND cs.AI) OR ("MRI" AND cs.AI) OR ("CT" AND cs.AI) OR ("Ultrasound" (eess.IV OR cs.CV)) OR ("Radiography" AND (eess.IV OR cs.CV))'
-    # query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("tumor" AND (eess.IV OR cs.CV OR)) OR ("bone" AND (eess.IV OR cs.CV) OR '
-    # '("medical image" AND cs.AI) OR ("Ultrasound" AND (eess.IV OR cs.CV)) OR ("Radiography" AND (eess.IV OR cs.CV))'
-
-    query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI)' 
-
-    get_arxiv_summary(_arxiv, query, max_results=7) # max_results可以自由改动
-    news_items["arxiv"] = _arxiv
+    # get_arxiv_summary(_arxiv, query, max_results=7) # max_results可以自由改动
+    # news_items["arxiv"] = _arxiv
     '''
     attempts = 2
     while attempts > 0:
@@ -140,20 +135,20 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
                 print("web_time:", news_items[keys].web_time[ii])
                 print("web_summarize:", news_items[keys].trans_content[ii])
         
-    # 提取所有信息里面的关键放在开头
-    LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
-    print("LLM_paper_summary: \n", LLM_paper_summary)
+    # # 提取所有信息里面的关键放在开头
+    # LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
+    # print("LLM_paper_summary: \n", LLM_paper_summary)
 
-    # 3. generate the podcast
-    # 生成markdown文件
-    _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
-    if format == 'excel':
-        output_file_path = output_folder + language + '_'+ _time + '_output.xlsx'
-    else:
-        output_file_path = output_folder + language + '_'+ _time + '_output.md'
-    generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
+    # # 3. generate the podcast
+    # # 生成markdown文件
+    # _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+    # if format == 'excel':
+    #     output_file_path = output_folder + language + '_'+ _time + '_output.xlsx'
+    # else:
+    #     output_file_path = output_folder + language + '_'+ _time + '_output.md'
+    # generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
     
-    return
+    # return
 
 
 if __name__ == '__main__':
@@ -164,10 +159,10 @@ if __name__ == '__main__':
     # 这里是可以一步获取标题和链接的
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
-        WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
-        WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
-        WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        # WebsiteInfo(url="https://www.jiqizhixin.com/", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
+        # WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
+        # WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
+        # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
         # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME") # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
@@ -183,7 +178,7 @@ if __name__ == '__main__':
     # language可以选择Chinese或English
     # output_folder选择一个文件夹
     # format可选markdown或excel
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown')
+    medai_news_podcast_api(websites, "config_file.txt", 'English', 'output/', 'markdown')
 
 
 
