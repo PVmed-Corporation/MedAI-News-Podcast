@@ -12,6 +12,18 @@ def unify_time(input_time):
     web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
     return web_time
 
+def check_date_match(paper_time, current_time):
+    # 提取日期部分（前10个字符）进行比较
+    paper_date = paper_time[:10]
+    current_date = current_time[:10]
+
+    # 检查日期部分是否一致
+    if paper_date == current_date:
+        return True
+    else:
+        return False
+
+
 # 使用requests和beautifulsoup的函数
 def get_websit_info(url, tag_name, class_name, process_type):
     # Make a request to a web page, and return the status code
@@ -168,7 +180,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
             web_time = soup.find(class_="author-published-node__content-published").get_text()
             web_time = unify_time(web_time)
 
-        # auntminnie
+        # mobi
         elif process_type == "mobihealthnews":
             soup = BeautifulSoup(response.content, 'html.parser')   
             a_tag = soup.find(class_=class_name).find(tag_name)

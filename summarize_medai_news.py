@@ -29,7 +29,7 @@ system_messages = {
         '生成三个中文的要点， 保持内容的一致性,不要返回多余信息'
     ],
 
-    'Key':[ '针对以下内容，提炼出2-5个关键词，以简洁方式概括其要点'
+    'Key':[ '针对以下内容, 提炼出2-5个关键词, 以简洁方式概括其要点'
 
     ]
     
@@ -44,7 +44,7 @@ system_messages = {
         'consolidating fragmented information and introductions without' 
         'overlooking details. '
         'Step 2 - Summarize this text in one sentence and add it to the front of this paragraph.'
-        'Step 3 - and there is an example:  ".',
+        'Step 3 - Embellish it with news language  ".',
 
         
         'You are a linguist, skilled in summarizing textual content and presenting '
@@ -76,6 +76,7 @@ system_messages = {
     ]
     
 }
+
 
 
 

@@ -44,15 +44,12 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     news_items = {}
     
     # # google news
-    query = "(medical imaging AND AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
-    # query = ('("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV)'
-    #         '("cardiac" AND (eess.IV OR cs.CV)) '
-    #         'OR ("tumor" AND (eess.IV OR cs.CV OR cs.AI)) OR ("bone" AND (eess.IV OR cs.CV OR cs.AI)) OR ("spinal" AND (eess.IV OR cs.CV OR cs.AI))'
-    #         'OR ("medical image" AND cs.AI) OR ("MRI" AND cs.AI) OR ("CT" AND cs.AI)'
-    #         'OR ("Ultrasound" (eess.IV OR cs.CV)) OR ("Radiography" AND (eess.IV OR cs.CV))'
-    #         'OR ("medical" AND "Image Segmentation") OR ("medical image" AND "deep learning")')
+    query = "medical imaging news OR medical AND image processing technology)"
+
+    # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
+
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
     news_items["google"] = _google
     
     # # arxiv直接调用api
@@ -64,7 +61,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     query =  '(medical AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI)' 
 
-    get_arxiv_summary(_arxiv, query, max_results=5) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, query, max_results=7) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     '''
     attempts = 2
@@ -131,7 +128,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
             print(ii)
             # print("url:", news_items[keys].url_link[ii])
             # update summary
-            if keys in ["google","auntminnie","机器之心"]:
+            if keys in ["arxiv","auntminnie","机器之心", "google"]:
                 summary_whole.append(news_items[keys].content[ii])
 
             if language == 'English':
@@ -171,7 +168,7 @@ if __name__ == '__main__':
         WebsiteInfo(url="https://paperswithcode.com", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
         WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
         WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
-        # # # TODO --添加分词器
+        # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME") # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
         # WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
