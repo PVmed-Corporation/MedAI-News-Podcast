@@ -32,7 +32,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
     }
     response = requests.get(url, headers=headers)
     response.encoding = response.apparent_encoding
-    
+    web_time = ''
     # Check the status code
     if response.status_code == 200:
         # Parse the HTML content
@@ -245,6 +245,7 @@ def fetch_gnews_links(_google, query, max_results=3):
         _google.get_page(gn.get('url'), gn.get('title'), web_time)
         article = google_news.get_full_article(gn['url'])
         # print("gnews article:", article.text)
+        article.download()
         _google.get_content(article.text)
 
     return article

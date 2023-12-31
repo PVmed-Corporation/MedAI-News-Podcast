@@ -44,31 +44,32 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     news_items = {}
     
     # # google news
-    query = "medical imaging news OR medical AND image processing technology)"
+    query = "medical imaging news"
+
 
     # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
     
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=1) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
     news_items["google"] = _google
     
     # # # arxiv直接调用api
     _arxiv = Source("arxiv")
+    # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
     query =  'organ sementation OR ("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI)' 
 
-    get_arxiv_summary(_arxiv, query, max_results=1) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, query, max_results=5) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
 
     '''
-    attempts = 2
+    attempts = 3
     while attempts > 0:
         result = get_arxiv_summary(_arxiv, query, max_results=5)
         print("1 arxiv result:", result)
         if result is not None:
-            # 如果结果不是 None, 则打印结果并跳出循环
             print("2 arxiv result:", result)
             break
-        # 如果结果是 None, 则等待 2 秒再尝试获取
+        # 等待 2 秒再尝试获取
         print("3 arxiv result:", result)
         time.sleep(1)
         attempts -= 1
@@ -166,7 +167,7 @@ if __name__ == '__main__':
         # WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
         # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
         # # TODO --添加分词器
-        # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME") # natureBME
+        # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME"), # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
         # WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
         # WebsiteInfo(url="https://aws.amazon.com/blogs/machine-learning/", tag_name="div", class_name="lb-col lb-mid-18 lb-tiny-24", process_type="aws"), # aws

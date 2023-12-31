@@ -1,6 +1,8 @@
 from langchain.chains.summarize import load_summarize_chain
 from langchain.document_loaders import WebBaseLoader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 
 messages = [{'role': 'system',
              'content': 'system_message'},
@@ -12,19 +14,19 @@ system_messages = {
     'English': [
         'Use the following step-by-step instructions to respond to user inputs.'
         'Step 1 - The user will provide you with text in triple quotes. Summarize'
-        'the content in a concise manner. Assemble a coherent script by adeptly' 
+        'the content in a concise manner in one paragraph. Assemble a coherent script by adeptly' 
         'consolidating fragmented information and introductions without' 
         'overlooking details. '
         'Step 2 - Summarize this text in one sentence and add it to the front of this paragraph.'
         'Step 3 - Embellish it with news language  ".',
         'You are a linguist, skilled in summarizing textual content and presenting '
-        'it in 5 bullet points using markdown.',
+        'it in 3 bullet points using markdown.',
         'Summarize the news in an objective way, you are skilled in summarizing textual '
         'content in one paragraph, and presenting it in 100 words.'
     ],
     'Chinese': [
         '你是一位新闻翻译专家。请注意语言流畅、连贯性和中文表达习惯。避免多余或不相关的信息，'
-        '专注于将文字翻译成中文。生成的结果需符合新闻格式规范，突出文章核心内容于开篇。'
+        '专注于将文字翻译成中文。生成的结果需符合新闻格式规范，突出文章核心内容于开篇, 用完整的一段话呈现。'
         '可以参考下面的例子：'
         '本文提出可变形大核注意力(D-LKA Net)，即采用大卷积核来充分理解体素上下文的简化注意力机制，在医学分割数据集(Synapse、NIH 胰腺和皮肤病变)上证明了其卓越的性能，代码即将开源! '
         '单位: 亚琛工业大学,西北大学等 '
@@ -39,7 +41,7 @@ system_messages = {
         '他们的模型针对流行的医学分割数据集(Synapse、NIH 胰腺和皮肤病变) 上的领先方法进行的评估证明了其卓越的性能。',
         '你是一位新闻翻译专家。请将文字翻译成中文。生成的结果需符合新闻格式规范的中文标题。'
         '请注意语言流畅、连贯性和中文表达习惯，以及学术名词的使用恰当。避免多余或不相关的信息，',
-        '你是个中文杂志编辑, 请将英文翻译成中文，注意中文表达的习惯和简练，生成5个中文的要点, 你说的话将被印在顶级新闻杂志的版面新闻上, 要检查并删除乱码和无关信息, '
+        '你是个中文杂志编辑, 请将英文翻译成中文，注意中文表达的习惯和简练，生成3个中文的要点, 你说的话将被印在顶级新闻杂志的版面新闻上, 要检查并删除乱码和无关信息, '
         '保持内容的一致性, 不要返回多余信息',
         '你是一位新闻专家。请对下面的文本进行总结，保留核心要点和关键信息，保持信息的准确和凝练，控制字数在200字左右，'
         '接着请将文字翻译成中文。请注意语言流畅、连贯性和中文表达习惯，以及学术名词的使用恰当。避免多余或不相关的信息'
@@ -55,13 +57,17 @@ system_messages = {
 # 文档分割器
 text_splitter_c = CharacterTextSplitter(
     separator="\n\n",
-    chunk_size=1000,
+    chunk_size=1500,
     chunk_overlap=200,
     length_function=len,
     is_separator_regex=False,
 )
 
-
+text_splitter_r = RecursiveCharacterTextSplitter(
+    chunk_size = 3000,
+    chunk_overlap = 20,
+    length_function = len,
+)
 
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
     # Load the summarization chain
@@ -74,18 +80,26 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
         for index, _item in enumerate(item.url_link):
             # gnews special
             if keys not in ["google"]:
-            # use Web loader to get info   
+                # use Web loader to get info   
                 loader = WebBaseLoader(_item)
                 docs = loader.load()
-                chunks = text_splitter_c.split_documents(docs)
-                print("docs:", docs, "\n", "chunks:", chunks, "\n")
+                print("keys:", keys, '\n', 'docs:', docs, '\n\n')
+                print(len(str(docs)))
+                if len(str(docs)) > 3000:
+                    # 当文本总长度超过4000字符时执行拆分
+                    chunks = text_splitter_r.split_documents(docs)
+                    web_summarize = [chain.run([chunk]) for chunk in chunks]
+                else:
+                    # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
+                    web_summarize = chain.run(docs)
+                
                 # summaries = []
                 # for chunk in chunks:
                 #     summary = chain.run([chunk])
                 #     summaries.append(summary)
 
-                web_summarize = [chain.run([chunk]) for chunk in text_splitter_c.split_documents(docs)]
-                item.get_content(web_summarize)
+                # web_summarize = [chain.run([chunk]) for chunk in text_splitter_c.split_documents(docs)]
+                item.get_content(str(web_summarize))
 
                 if language == 'Chinese': 
                     # 提取messsage中内容部分翻译网页信息为中文
@@ -118,7 +132,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
             else:
                 if language == 'Chinese': 
 
-                    # # 使用gpt模型简化
+                    # # 法1--使用gpt模型简化
                     # messages[0]['content'] = system_messages['English'][2]
                     # messages[1]['content'] = item.content[index]
 
@@ -131,26 +145,32 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     #             )
                     # web_chinese = response.choices[0].message.content
 
-                    # 使用longchian简化
+                    # 法2--使用longchian简化
                     docs = item.content[index]
-                    chunks = text_splitter_c.split_text(docs)
                     
-                    chunks = text_splitter_c.create_documents(chunks) 
-                    print("docs", docs, '\n', "chunk2:", chunks)
-                    
+                    print("docs", docs)
+                    if len(str(docs)) > 3000:
+                        chunks = text_splitter_r.split_text(docs)            
+                        chunks = text_splitter_r.create_documents(chunks) 
+                        paper_summarize = [chain.run([chunk]) for chunk in chunks]
+                    else:
+                    # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
+                        docs = text_splitter_r.create_documents(docs)
+                        print("docs", docs)
+                        paper_summarize = chain.run(docs)
                     # summaries = []
                     # for chunk in chunks:
                     #     print("chunk", chunk)
                     #     summary = chain.run([chunk])
                     #     summaries.append(summary) 
                                        
-                    paper_summarize = [chain.run([chunk]) for chunk in chunks]
+                    
                     # print("docs:", docs, "\n", "summaries:", summaries, "\n")
-                    item.get_content(paper_summarize)
+                    item.get_content(str(paper_summarize))
 
                     # 提取messsage中内容部分翻译网页信息为中文
                     messages[0]['content'] = system_messages['Chinese'][0]
-                    messages[1]['content'] = web_chinese
+                    messages[1]['content'] = str(paper_summarize)
 
                     # TODO --最后输入实际是messages这个列表
                     response = client.chat.completions.create(
@@ -218,17 +238,6 @@ def generate_paper_summary(client, info2summarize, language):
                             )
         generate_key_points = response.choices[0].message.content
 
-        # # 检查信息正确
-        # messages[0]['content'] = system_message[5]
-        # messages[1]['content'] = generate_key_points
-
-        # response = client.chat.completions.create(
-        #                 model="gpt-3.5-turbo-16k",
-        #                 messages=messages,
-        #                 temperature=1.0,
-        #                 max_tokens=2048,
-        #             )
-        # generate_key_points = response.choices[0].message.content
     
     return generate_key_points
 
