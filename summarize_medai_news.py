@@ -72,8 +72,8 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 loader = WebBaseLoader(_item)
                 docs = loader.load()
                 print("keys:", keys, '\n', 'docs:', docs, '\n\n')
-                print(len(str(docs[0].page_content)))
-                if len(str(docs[0].page_content)) > 3000:
+                print(len(str(docs)))
+                if len(str(docs)) > 3000:
                     # 当文本总长度超过4000字符时执行拆分
                     chunks = text_splitter_r.split_documents(docs)
                     web_summarize = chain.run(chunks)
@@ -136,7 +136,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
 
                     # 法2--使用longchian summarize
                     docs = item.content[index]
-                    if len(str(docs[0].page_content)) > 3000:
+                    if len(str(docs)) > 3000:
                         chunks = text_splitter_r.split_text(docs)            
                         chunks = text_splitter_r.create_documents(chunks) 
                         paper_summarize = chain.run(chunks)

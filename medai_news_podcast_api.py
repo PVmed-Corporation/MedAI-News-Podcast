@@ -47,17 +47,17 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     query = "medical image, AI medical image, image medicine, medical image technology"
     # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
     
-    # _google = Source("google")
-    # fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
-    # news_items["google"] = _google
+    _google = Source("google")
+    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
+    news_items["google"] = _google
     
-    # # arxiv直接调用api
-    # _arxiv = Source("arxiv")
-    # # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
-    # query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
+    # arxiv直接调用api
+    _arxiv = Source("arxiv")
+    # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
+    query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
 
-    # get_arxiv_summary(_arxiv, query, max_results=5) # max_results可以自由改动
-    # news_items["arxiv"] = _arxiv
+    get_arxiv_summary(_arxiv, query, max_results=3) # max_results可以自由改动
+    news_items["arxiv"] = _arxiv
 
     '''
     attempts = 3
@@ -161,9 +161,9 @@ if __name__ == '__main__':
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
         WebsiteInfo(url="https://www.jiqizhixin.com", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
-        # WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
-        # WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
+        WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
+        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
         # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME"), # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
