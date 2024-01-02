@@ -68,15 +68,16 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
         # 正文的信息排版
         for ii, keys in enumerate(news_items):
             print(keys,"加入md文件")
+            
             if ii<2:
                 markdown_all += f"""## Paper from {keys} \n\n"""
 
-                markdown_all += generate_html_snippet(news_items, keys, language)
+                # markdown_all += generate_html_snippet(news_items, keys, language)
             else:
                 if ii == 2:
                     markdown_all += """## News from Other Websites \n\n"""
 
-                markdown_all += generate_html_snippet(news_items, keys, language)
+            markdown_all += generate_html_snippet(news_items, keys, language)
 
         with open(output_path, 'w', encoding='utf-8') as file:
             file.write(markdown_all)

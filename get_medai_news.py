@@ -30,7 +30,8 @@ def get_websit_info(url, tag_name, class_name, process_type):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.3'
     }
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers) 
+    print("response:", response)
     response.encoding = response.apparent_encoding
     web_time = ''
     # Check the status code
@@ -144,6 +145,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
         # 爬取机器之心信息
         elif process_type == "机器之心":  
             articles = soup.find(class_=class_name).find("a")
+            print("articles:", articles)
             web_time = soup.find('time', class_='js-time-ago').get_text(strip=True)
             web_time = unify_time(web_time)
             if articles:                
@@ -161,7 +163,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
             print("articles:", articles)
             if articles:
                 # 提取 href 值和标题文本
-                web_link = url + articles.a['href']
+                web_link = "https://paperswithcode.com" + articles.a['href']
                 web_titile = articles.a.get_text()
             else:
                 print("Couldn't find the target post URL.")
@@ -245,7 +247,7 @@ def fetch_gnews_links(_google, query, max_results=3):
         _google.get_page(gn.get('url'), gn.get('title'), web_time)
         article = google_news.get_full_article(gn['url'])
         # print("gnews article:", article.text)
-        article.download()
+        
         _google.get_content(article.text)
 
     return article

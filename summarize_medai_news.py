@@ -26,19 +26,7 @@ system_messages = {
     ],
     'Chinese': [
         '你是一位新闻翻译专家。请注意语言流畅、连贯性和中文表达习惯。避免多余或不相关的信息，'
-        '专注于将文字翻译成中文。生成的结果需符合新闻格式规范，突出文章核心内容于开篇, 用完整的一段话呈现。'
-        '可以参考下面的例子：'
-        '本文提出可变形大核注意力(D-LKA Net)，即采用大卷积核来充分理解体素上下文的简化注意力机制，在医学分割数据集(Synapse、NIH 胰腺和皮肤病变)上证明了其卓越的性能，代码即将开源! '
-        '单位: 亚琛工业大学,西北大学等 '
-        '矢学图像分割通过 Transformer 模型得到了显著改进，该模型在掌握深远的上下文和全局上下文信息方面表现出色。 '
-        '然而，这些模型不断增长的计算需求 (与平方token数量成正比) 限制了它们的深度和分辨率能力。'
-        '当前大多数方法逐片处理 D 体图像数据 (称为伪 3D)，缺少关键的片间信息从而降低模型的整体性能。'
-        '为了解决这些挑战他们引入了Deformable Large Kernel Attention (DLKA Attention) 的概念，这是一种采用大卷积核来充分理解体积上下文的简化注意力机制。 '
-        '这种机制在类似于自注意力的感受野中运行，同时避免了计算开销。 '
-        '此外，他们提出的注意力机制受益于可变形卷积来灵活地扭曲采样网格，使模型能够适当地适应不同的数据模式。 '
-        '他们设计了 D-LKAAttention 的 2D 和 3D 改编，后者在跨深度数据理解方面表现出色。 '
-        '这些组件共同塑造了他们新颖的分层 Vision Transformer 架构，即 D-LKA Net。'
-        '他们的模型针对流行的医学分割数据集(Synapse、NIH 胰腺和皮肤病变) 上的领先方法进行的评估证明了其卓越的性能。',
+        '专注于将文字翻译成中文。生成的结果需符合新闻格式规范，突出文章核心内容于开篇, 用完整的一段话呈现, 控制内容在200字左右。',
         '你是一位新闻翻译专家。请将文字翻译成中文。生成的结果需符合新闻格式规范的中文标题。'
         '请注意语言流畅、连贯性和中文表达习惯，以及学术名词的使用恰当。避免多余或不相关的信息，',
         '你是个中文杂志编辑, 请将英文翻译成中文，注意中文表达的习惯和简练，生成3个中文的要点, 你说的话将被印在顶级新闻杂志的版面新闻上, 要检查并删除乱码和无关信息, '
@@ -54,7 +42,7 @@ system_messages = {
     
 }
 
-# 文档分割器
+# 法一：按特殊字节分割的文档分割器，可能连贯性更好，但对网页这样乱码较多的内容不太适用
 text_splitter_c = CharacterTextSplitter(
     separator="\n\n",
     chunk_size=1500,
@@ -62,7 +50,7 @@ text_splitter_c = CharacterTextSplitter(
     length_function=len,
     is_separator_regex=False,
 )
-
+# 法二：按字符数量的文档分割器，可能连贯性差一点，但是对网页和text这样多种形式的文本的普适性好
 text_splitter_r = RecursiveCharacterTextSplitter(
     chunk_size = 3000,
     chunk_overlap = 20,
@@ -84,11 +72,12 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 loader = WebBaseLoader(_item)
                 docs = loader.load()
                 print("keys:", keys, '\n', 'docs:', docs, '\n\n')
-                print(len(str(docs)))
-                if len(str(docs)) > 3000:
+                print(len(str(docs[0].page_content)))
+                if len(str(docs[0].page_content)) > 3000:
                     # 当文本总长度超过4000字符时执行拆分
                     chunks = text_splitter_r.split_documents(docs)
-                    web_summarize = [chain.run([chunk]) for chunk in chunks]
+                    web_summarize = chain.run(chunks)
+                    # web_summarize = [chain.run([chunk]) for chunk in chunks]
                 else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                     web_summarize = chain.run(docs)
@@ -132,7 +121,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
             else:
                 if language == 'Chinese': 
 
-                    # # 法1--使用gpt模型简化
+                    # # 法1--使用gpt模型summarize
                     # messages[0]['content'] = system_messages['English'][2]
                     # messages[1]['content'] = item.content[index]
 
@@ -145,26 +134,25 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     #             )
                     # web_chinese = response.choices[0].message.content
 
-                    # 法2--使用longchian简化
+                    # 法2--使用longchian summarize
                     docs = item.content[index]
-                    
-                    print("docs", docs)
-                    if len(str(docs)) > 3000:
+                    if len(str(docs[0].page_content)) > 3000:
                         chunks = text_splitter_r.split_text(docs)            
                         chunks = text_splitter_r.create_documents(chunks) 
-                        paper_summarize = [chain.run([chunk]) for chunk in chunks]
+                        paper_summarize = chain.run(chunks)
+                        # paper_summarize = [chain.run([chunk]) for chunk in chunks]
                     else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                         docs = text_splitter_r.create_documents(docs)
-                        print("docs", docs)
+                        # print("docs", docs)
                         paper_summarize = chain.run(docs)
+
                     # summaries = []
                     # for chunk in chunks:
                     #     print("chunk", chunk)
                     #     summary = chain.run([chunk])
                     #     summaries.append(summary) 
-                                       
-                    
+                                             
                     # print("docs:", docs, "\n", "summaries:", summaries, "\n")
                     item.get_content(str(paper_summarize))
 
