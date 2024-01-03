@@ -1,4 +1,5 @@
 import requests
+import time
 from bs4 import BeautifulSoup
 import arxiv
 from gnews import GNews
@@ -27,13 +28,17 @@ def check_date_match(paper_time, current_time):
 # 使用requests和beautifulsoup的函数
 def get_websit_info(url, tag_name, class_name, process_type):
     # Make a request to a web page, and return the status code
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.3'
     }
+
     response = requests.get(url, headers=headers) 
     print("response:", response)
     response.encoding = response.apparent_encoding
     web_time = ''
+    local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    print("local_time:", local_time)
     # Check the status code
     if response.status_code == 200:
         # Parse the HTML content
@@ -154,20 +159,30 @@ def get_websit_info(url, tag_name, class_name, process_type):
             else:
                 print("Couldn't find the target post URL.")
                 raise ValueError  
-                    
+            # else:
+            #     print("Time is not valid:", "web_time is: ", web_time, "local_time is: ", local_time)
+            #     url = "1"
+            #     web_titile = "1"
+            #     web_link = "1"
+            #     web_time = "1"
+
         # 爬取paper with code信息
         elif process_type == "paperwithcode":  
             articles = soup.find(class_=class_name).find('h1')
             web_time = soup.find(class_=class_name).find('span', class_='author-name-text item-date-pub').get_text()
             web_time = unify_time(web_time)
             print("articles:", articles)
+
             if articles:
                 # 提取 href 值和标题文本
                 web_link = "https://paperswithcode.com" + articles.a['href']
                 web_titile = articles.a.get_text()
             else:
                 print("Couldn't find the target post URL.")
-                raise ValueError        
+                raise ValueError   
+
+
+     
          
         # auntminnie
         elif process_type == "auntminnie":
@@ -192,6 +207,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
             web_time = soup.find('ul', class_='sponsored-author-create top-story').find('li', class_="last").get_text(strip=True)
             web_time = unify_time(web_time)
 
+
         # natureBME
         elif process_type == "natureBME" :
             soup = BeautifulSoup(response.content, 'html.parser')   
@@ -199,7 +215,9 @@ def get_websit_info(url, tag_name, class_name, process_type):
             web_link = a_tag.get('href')
             web_titile = a_tag.get_text()
 
-        return web_link, web_titile, web_time   
+        
+        return web_link, web_titile, web_time 
+    
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
         raise ValueError

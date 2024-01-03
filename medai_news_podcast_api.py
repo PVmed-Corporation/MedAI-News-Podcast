@@ -6,7 +6,27 @@ from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 from generate_output import generate_result
 import time
+from datetime import datetime, timedelta
 
+local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+
+def check_date_match(paper_time, current_time):
+    
+    paper_date = paper_time[:10]
+
+    # # 等于当天
+    # juedge_time = current_time[:10]
+    
+    # 提取前一天
+    current_time_ = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S')
+    juedge_time = str(current_time_ - timedelta(days=1))
+    juedge_time = juedge_time[:10]
+
+    # 检查日期部分是否一致
+    if paper_date == juedge_time:
+        return True
+    else:
+        return False
 
 class Source(object):
     def __init__(self, name):
@@ -23,9 +43,14 @@ class Source(object):
         self.trans_content = []
     
     def get_page(self, url_link, title, web_time):
-        self.url_link.append(url_link)
-        self.title.append(title)
-        self.web_time.append(web_time)
+        if check_date_match(web_time, local_time):
+            self.url_link.append(url_link)
+            self.title.append(title)
+            self.web_time.append(web_time)
+            
+        else:
+            print("Not adding information for URL:", url_link)
+
 
     def get_content(self, content):
         self.content.append(content)
@@ -37,20 +62,21 @@ class Source(object):
 
 def medai_news_podcast_api(websites, token_path, language, output_folder, format):
 
+    _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
     with open(token_path) as f:
             private_token = f.readline()
 
     # 1. collect the information
     news_items = {}
     
-    # # google news
-    # query = "medical image"
-    query = "meidcal image"
-    # # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
+    # # # google news
+    # # query = "medical image"
+    # query = "meidcal image"
+    # # # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
     
-    _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=15) # max_results可以自由改动
-    news_items["google"] = _google
+    # _google = Source("google")
+    # fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
+    # news_items["google"] = _google
     
     # # arxiv直接调用api
     # _arxiv = Source("arxiv")
@@ -103,6 +129,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     summary_whole = [] # [item['web_summarize'] for item in news_items]
     
     for keys in news_items:
+        
         print("info from:", keys)
         print("info news_items[keys].title:", news_items[keys].title)
 
@@ -143,7 +170,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     # 3. generate the podcast
     # 生成markdown文件
-    _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+    
     if format == 'excel':
         output_file_path = output_folder + language + '_'+ _time + '_output.xlsx'
     else:
@@ -161,8 +188,8 @@ if __name__ == '__main__':
     # 这里是可以一步获取标题和链接的
     # 如果链接太多会 too many values to unpack (expected 2)
     websites = [
-        # WebsiteInfo(url="https://www.jiqizhixin.com", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
-        # WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
+        WebsiteInfo(url="https://www.jiqizhixin.com", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
+        WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
         # WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
         # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
         # # TODO --添加分词器
