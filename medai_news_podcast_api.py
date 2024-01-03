@@ -15,12 +15,12 @@ def check_date_match(paper_time, current_time):
     paper_date = paper_time[:10]
 
     # # 等于当天
-    # juedge_time = current_time[:10]
+    juedge_time = current_time[:10]
     
-    # 提取前一天
-    current_time_ = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S')
-    juedge_time = str(current_time_ - timedelta(days=1))
-    juedge_time = juedge_time[:10]
+    # # 提取前一天
+    # current_time_ = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S')
+    # juedge_time = str(current_time_ - timedelta(days=1))
+    # juedge_time = juedge_time[:10]
 
     # 检查日期部分是否一致
     if paper_date == juedge_time:
@@ -47,10 +47,13 @@ class Source(object):
             self.url_link.append(url_link)
             self.title.append(title)
             self.web_time.append(web_time)
-            
         else:
             print("Not adding information for URL:", url_link)
 
+    def get_arxiv_page(self, url_link, title, web_time):
+        self.url_link.append(url_link)
+        self.title.append(title)
+        self.web_time.append(web_time)
 
     def get_content(self, content):
         self.content.append(content)
@@ -69,22 +72,22 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # 1. collect the information
     news_items = {}
     
-    # # # google news
-    # # query = "medical image"
-    # query = "meidcal image"
-    # # # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
+    # # google news
+    # query = "medical image"
+    query = "meidcal image"
+    # # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
     
-    # _google = Source("google")
-    # fetch_gnews_links(_google, query, max_results=5) # max_results可以自由改动
-    # news_items["google"] = _google
+    _google = Source("google")
+    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
+    news_items["google"] = _google
     
-    # # arxiv直接调用api
-    # _arxiv = Source("arxiv")
-    # # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
-    # query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
+    # arxiv直接调用api
+    _arxiv = Source("arxiv")
+    # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
+    query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
 
-    # get_arxiv_summary(_arxiv, query, max_results=15) # max_results可以自由改动
-    # news_items["arxiv"] = _arxiv
+    get_arxiv_summary(_arxiv, query, max_results=2) # max_results可以自由改动
+    news_items["arxiv"] = _arxiv
 
     '''
     attempts = 3

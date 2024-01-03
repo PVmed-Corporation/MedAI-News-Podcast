@@ -235,7 +235,7 @@ def get_arxiv_summary(_arxiv, query, max_results):
     
     for result in search.results():
         web_time = unify_time(str(result.published))
-        _arxiv.get_page(result.entry_id, result.title, web_time)
+        _arxiv.get_arxiv_page(result.entry_id, result.title, web_time)
         # _arxiv.get_content(result.summary)
 
     return
@@ -255,7 +255,7 @@ def get_youtube_dojo(_youtb, channel_id):
 
 def fetch_gnews_links(_google, query, max_results=3):
     # 初始化 GNews
-    google_news = GNews(language='en', period='2d',
+    google_news = GNews(language='en', period='1d',
                         start_date=None, end_date=None,
                         max_results=max_results, exclude_websites=None)
 
