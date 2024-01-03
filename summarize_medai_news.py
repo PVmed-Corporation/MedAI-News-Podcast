@@ -57,13 +57,17 @@ text_splitter_r = RecursiveCharacterTextSplitter(
     length_function = len,
 )
 
+
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
     # Load the summarization chain
     chain = load_summarize_chain(llm, chain_type=chain_type) # maximum context length is 4097 tokens
-    
+    output_test = ''
+    output_test += 'chain'  + str(chain)
+
     # summarize_website_content and translate information to Chinese
     for keys in news_items:
         item = news_items[keys]
+        output_test += 'item'  + str(item) + '\n'
         # Load the content from the given URL
         for index, _item in enumerate(item.url_link):
             # gnews special
@@ -71,16 +75,21 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 # use Web loader to get info   
                 loader = WebBaseLoader(_item)
                 docs = loader.load()
-                print("keys:", keys, '\n', 'docs:', docs, '\n\n')
+                output_test += '【_item】'  + str(_item) + '\n'
+                output_test += '【docs】'  + str(docs) + '\n'
+                # print("【keys:】", keys, '\n', 'docs:', docs, '\n\n')
                 print(len(str(docs)))
+                output_test += '【len(str(docs)】'  + str(len(str(docs))) + '\n'
                 if len(str(docs)) > 3000:
                     # 当文本总长度超过4000字符时执行拆分
                     chunks = text_splitter_r.split_documents(docs)
                     web_summarize = chain.run(chunks)
+                    # output_test += '【web_summarize：】'  + str(web_summarize) + '\n'
                     # web_summarize = [chain.run([chunk]) for chunk in chunks]
                 else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                     web_summarize = chain.run(docs)
+                    # output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
                 
                 # summaries = []
                 # for chunk in chunks:
@@ -114,7 +123,8 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                                     max_tokens=2048,
                                 )
                     title_chinese = response.choices[0].message.content
-                    
+                    output_test += '【title_chinese】'  + str(title_chinese) + '\n'
+                    output_test += '【web_chinese】'  + str(web_chinese) + '\n'
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
 
@@ -136,16 +146,20 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
 
                     # 法2--使用longchian summarize
                     docs = item.content[index]
+                    output_test += '【_item】'  + _item + '\n'
+                    output_test += '【docs】'  + str(docs) + '\n'
                     if len(str(docs)) > 3000:
                         chunks = text_splitter_r.split_text(docs)            
                         chunks = text_splitter_r.create_documents(chunks) 
                         paper_summarize = chain.run(chunks)
+                        output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
                         # paper_summarize = [chain.run([chunk]) for chunk in chunks]
                     else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                         docs = text_splitter_r.create_documents(docs)
                         # print("docs", docs)
                         paper_summarize = chain.run(docs)
+                        output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
 
                     # summaries = []
                     # for chunk in chunks:
@@ -179,9 +193,16 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                                     max_tokens=2048,
                                 )
                     title_chinese = response.choices[0].message.content
-                    
+                    output_test += '【title_chinese】'  + str(title_chinese) + '\n'
+                    output_test += '【web_chinese】'  + str(web_chinese) + '\n'                    
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
+
+    with open("output/output.txt", "w") as file:
+        # 将字符串写入文件
+        file.write(output_test)
+
+    print("字符串已保存到output.txt文档中")
     
     return
 

@@ -175,6 +175,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
             a_tag = soup.find(class_=class_name).find(tag_name)
             web_link = url + a_tag.get('href')
             web_titile  = a_tag.get_text()
+            
             # 获取时间
             response = requests.get(web_link, headers=headers)
             response.encoding = response.apparent_encoding
@@ -236,7 +237,7 @@ def get_youtube_dojo(_youtb, channel_id):
 
 def fetch_gnews_links(_google, query, max_results=3):
     # 初始化 GNews
-    google_news = GNews(language='en', country='cn', period='1d',
+    google_news = GNews(language='en', period='2d',
                         start_date=None, end_date=None,
                         max_results=max_results, exclude_websites=None)
 
@@ -246,8 +247,8 @@ def fetch_gnews_links(_google, query, max_results=3):
         web_time = unify_time(gn.get('published date'))
         _google.get_page(gn.get('url'), gn.get('title'), web_time)
         article = google_news.get_full_article(gn['url'])
-        # print("gnews article:", article.text)
-        
+        article.download()
+        print("gnews article:", article.text)
         _google.get_content(article.text)
 
     return article
