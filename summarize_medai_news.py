@@ -18,10 +18,13 @@ system_messages = {
         'consolidating fragmented information and introductions without' 
         'overlooking details. '
         'Step 2 - Summarize this text in one sentence and add it to the front of this paragraph.'
-        'Step 3 - Embellish it with news language  ".',
+        'Step 3 - keep the content in 200 words  ".',
         'You are a linguist, skilled in summarizing textual content and presenting '
         'it in 3 bullet points using markdown.',
-        'Summarize the news in an objective way, you are skilled in summarizing textual '
+        'Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.'
+        'Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.'
+        'Rely strictly on the provided text, without including external information. Format the summary in one paragraph with in 100 words.',
+        'Summarize the news in an objective way, delete newline character, summarizing textual '
         'content in one paragraph, and presenting it in 100 words.'
     ],
     'Chinese': [
@@ -33,7 +36,7 @@ system_messages = {
         '保持内容的一致性, 不要返回多余信息',
         '你是一位新闻专家。请对下面的文本进行总结，保留核心要点和关键信息，保持信息的准确和凝练，控制字数在200字左右，'
         '接着请将文字翻译成中文。请注意语言流畅、连贯性和中文表达习惯，以及学术名词的使用恰当。避免多余或不相关的信息'
-        '最后对结果进行润色，生成的结果需符合新闻格式规范。',
+        '最后对结果进行润色，生成的结果需符合新闻格式规范。'
     ],
 
     'Key':[ '针对以下内容, 提炼出2-5个关键词, 以简洁方式概括其要点'
@@ -89,12 +92,8 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                     web_summarize = chain.run(docs)
-                    output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
-                
-                # summaries = []
-                # for chunk in chunks:
-                #     summary = chain.run([chunk])
-                #     summaries.append(summary)
+                    output_test += '【paper_summarize】'  + str(web_summarize) + '\n'
+            
 
                 # web_summarize = [chain.run([chunk]) for chunk in text_splitter_c.split_documents(docs)]
                 item.get_content(str(web_summarize))
@@ -130,69 +129,47 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
 
-                else:
-                    pass
+            else:
+                # 法1--使用gpt模型summarize
+                output_test += '【keys】'  + str(keys) + '\n'
+                output_test += '【title】'  + str(item.title[index]) + '\n'
 
-            else: # google
+                messages[0]['content'] = system_messages['English'][2]
+                messages[1]['content'] = item.content[index]
                 
-
-                # # 法1--使用gpt模型summarize
-                # messages[0]['content'] = system_messages['English'][2]
-                # messages[1]['content'] = item.content[index]
-
-                # # TODO --最后输入实际是messages这个列表
-                # response = client.chat.completions.create(
-                #                 model="gpt-3.5-turbo-16k",
-                #                 messages=messages,
-                #                 temperature=1.0,
-                #                 max_tokens=2048,
-                #             )
-                # web_chinese = response.choices[0].message.content
-
-                # 法2--使用longchian summarize
-                docs = item.content[index]
-                docs = docs.replace('\n', '')
-             
-                docs = text_splitter_r.create_documents([docs])
-                print("item docs：", str(docs))
-                output_test += '【_item】'  + str(_item) + '\n'
-                output_test += '【docs】'  + str(docs) + '\n'
-                if len(str(docs)) > 3000:
-                     
-                    print("long Google docs", str(docs))
-                    chunks = text_splitter_r.split_documents(docs)            
-                    paper_summarize = chain.run(chunks)
-                    print("long Google summarizr", str(docs))
-                    output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
-                    # paper_summarize = [chain.run([chunk]) for chunk in chunks]
-                else:
-                # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
-                    # docs = text_splitter_r.create_documents(docs)
-                    print("short Google docs", str(docs))
-                    paper_summarize = chain.run(docs)
-                    output_test += '【!!paper_summarize】'  + str(paper_summarize) + '\n'
-
-                # google 简化
-                messages[0]['content'] = system_messages['English'][0]
-                messages[1]['content'] = str(paper_summarize)
+                output_test += '【google content (item.content[index])】'  + str(item.content[index]) + '\n'
 
                 # TODO --最后输入实际是messages这个列表
                 response = client.chat.completions.create(
                                 model="gpt-3.5-turbo-16k",
                                 messages=messages,
                                 temperature=1.0,
-                                max_tokens=2048,
+                                max_tokens=4800,
                             )
-                paper_summarize = response.choices[0].message.content
-
-                item.get_content(str(paper_summarize))
                 
+                web_summarize = response.choices[0].message.content
+                web_summarize = web_summarize.replace("\n", "").replace("/n", "")
+                output_test += '【google content (web_summarize1)】'  + str(web_summarize) + '\n'
+
+                # print("google web_summarize：", google_summarize)
+                print("item:", item)
+                print("Content before adding:", item.content)
+                output_test += '【Content before adding item.content】'  + str(item.content) + '\n'
+                
+                #  # 扩展列表以确保它至少包含index+1个元素
+                # if index >= len(item.content):
+                #     item.content.extend([""] * (index + 1 - len(item.content)))
+
+                item.content[index] = str(web_summarize)
+
+                print("Content after adding:", item.content)
+                output_test += '【Content after adding item.content】'  + str(item.content) + '\n'
 
                 if language == 'Chinese': 
 
                     # 提取messsage中内容部分翻译网页信息为中文
                     messages[0]['content'] = system_messages['Chinese'][0]
-                    messages[1]['content'] = str(paper_summarize)
+                    messages[1]['content'] = str(web_summarize)
 
                     # TODO --最后输入实际是messages这个列表
                     response = client.chat.completions.create(
@@ -218,10 +195,10 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'                    
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
-                
                 else:
-                    pass
-
+                    print("add google ", "/n")
+                
+     
     with open("output/output.txt", "w") as file:
         # 将字符串写入文件
         file.write(output_test)
@@ -270,6 +247,9 @@ def generate_paper_summary(client, info2summarize, language):
                                 max_tokens=4000,
                             )
         generate_key_points = response.choices[0].message.content
+
+    else:
+        pass
 
     
     return generate_key_points

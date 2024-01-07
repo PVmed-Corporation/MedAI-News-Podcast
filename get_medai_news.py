@@ -245,7 +245,6 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
                 web_link = None
                 web_time = None
 
-
         # natureBME
         elif process_type == "natureBME" :
             soup = BeautifulSoup(response.content, 'html.parser')   
@@ -254,8 +253,6 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
             web_titile = a_tag.get_text()
 
         return web_link, web_titile, web_time 
-    
-    
     
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
@@ -305,7 +302,7 @@ def fetch_gnews_links(_google, query, max_results=3):
         _google.get_page(gn.get('url'), gn.get('title'), web_time)
         article = google_news.get_full_article(gn['url'])
         # article.download()
-        print("gnews article:", article.text)
+        # print("gnews article:", article.text)
         _google.get_content(article.text)
 
     return article
