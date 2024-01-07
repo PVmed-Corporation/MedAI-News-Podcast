@@ -6,27 +6,10 @@ from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 from generate_output import generate_result
 import time
-from datetime import datetime, timedelta
+
 
 local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-def check_date_match(paper_time, current_time):
-    
-    paper_date = paper_time[:10]
-
-    # # 等于当天
-    juedge_time = current_time[:10]
-    
-    # # 提取前一天
-    # current_time_ = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S')
-    # juedge_time = str(current_time_ - timedelta(days=1))
-    # juedge_time = juedge_time[:10]
-
-    # 检查日期部分是否一致
-    if paper_date == juedge_time:
-        return True
-    else:
-        return False
 
 class Source(object):
     def __init__(self, name):
@@ -43,17 +26,12 @@ class Source(object):
         self.trans_content = []
     
     def get_page(self, url_link, title, web_time):
-        if check_date_match(web_time, local_time):
-            self.url_link.append(url_link)
-            self.title.append(title)
-            self.web_time.append(web_time)
-        else:
-            print("Not adding information for URL:", url_link)
-
-    def get_arxiv_page(self, url_link, title, web_time):
+        # if check_date_match(web_time, local_time):
         self.url_link.append(url_link)
         self.title.append(title)
         self.web_time.append(web_time)
+        # else:
+        #     print("Not adding information for URL:", url_link)
 
     def get_content(self, content):
         self.content.append(content)
@@ -63,7 +41,7 @@ class Source(object):
         self.trans_content.append(trans_content)
 
 
-def medai_news_podcast_api(websites, token_path, language, output_folder, format):
+def medai_news_podcast_api(websites, token_path, language, output_folder, format, day):
 
     _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
     with open(token_path) as f:
@@ -72,13 +50,13 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # 1. collect the information
     news_items = {}
     
-    # # google news
-    # query = "medical image"
-    query = "meidcal image"
+    # google news
+    query = "AI medical, clinical image technology, medical image"
+    # query = "meidcal image"
     # # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
     
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=7) # max_results可以自由改动
     news_items["google"] = _google
     
     # arxiv直接调用api
@@ -86,7 +64,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
     query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
 
-    get_arxiv_summary(_arxiv, query, max_results=2) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, query, max_results=7) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
 
     '''
@@ -112,12 +90,15 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # 遍历网站信息列表并获取信息
     for site in websites:
         # TODO: 按照最新内容，可能不止一个link
-        web_link, web_title, web_time = get_websit_info(site.url, site.tag_name, site.class_name, site.process_type)
+        web_link, web_title, web_time = get_websit_info(site.url, site.tag_name, site.class_name, site.process_type, local_time, day)
+        print(web_link, web_title, web_time)
+        if web_link == None:
+            pass
 
-        _web = Source(site.process_type)
-        _web.get_page(web_link, web_title, web_time)
-
-        news_items[site.process_type] = _web
+        else:
+            _web = Source(site.process_type)
+            _web.get_page(web_link, web_title, web_time)
+            news_items[site.process_type] = _web
 
         print(f"在{site.process_type}网站爬取到的link和title和time是:\n{web_link}: {web_title}\n 发布时间是: {web_time}\n")
 
@@ -193,9 +174,9 @@ if __name__ == '__main__':
     websites = [
         WebsiteInfo(url="https://www.jiqizhixin.com", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
         WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
-        # WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
-        # # TODO --添加分词器
+        WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
+        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        # # # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME"), # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
         # WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
@@ -210,7 +191,7 @@ if __name__ == '__main__':
     # language可以选择Chinese或English
     # output_folder选择一个文件夹
     # format可选markdown或excel
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown')
+    medai_news_podcast_api(websites, "config_file.txt", 'English', 'output/', 'markdown', "no-today")
 
     #TODO：
     # 1. web_time not complete in website

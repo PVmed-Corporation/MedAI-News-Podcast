@@ -53,7 +53,7 @@ text_splitter_c = CharacterTextSplitter(
 # 法二：按字符数量的文档分割器，可能连贯性差一点，但是对网页和text这样多种形式的文本的普适性好
 text_splitter_r = RecursiveCharacterTextSplitter(
     chunk_size = 3000,
-    chunk_overlap = 20,
+    chunk_overlap = 50,
     length_function = len,
 )
 
@@ -84,12 +84,12 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     # 当文本总长度超过4000字符时执行拆分
                     chunks = text_splitter_r.split_documents(docs)
                     web_summarize = chain.run(chunks)
-                    # output_test += '【web_summarize：】'  + str(web_summarize) + '\n'
-                    # web_summarize = [chain.run([chunk]) for chunk in chunks]
+                    output_test += '【web_summarize：】'  + str(web_summarize) + '\n'
+                 
                 else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                     web_summarize = chain.run(docs)
-                    # output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
+                    output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
                 
                 # summaries = []
                 # for chunk in chunks:
@@ -98,6 +98,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
 
                 # web_summarize = [chain.run([chunk]) for chunk in text_splitter_c.split_documents(docs)]
                 item.get_content(str(web_summarize))
+             
 
                 if language == 'Chinese': 
                     # 提取messsage中内容部分翻译网页信息为中文
@@ -123,52 +124,71 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                                     max_tokens=2048,
                                 )
                     title_chinese = response.choices[0].message.content
+                    output_test += '【title】'  + str(item.title[index]) + '\n'
                     output_test += '【title_chinese】'  + str(title_chinese) + '\n'
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
 
-            else:
+                else:
+                    pass
+
+            else: # google
+                
+
+                # # 法1--使用gpt模型summarize
+                # messages[0]['content'] = system_messages['English'][2]
+                # messages[1]['content'] = item.content[index]
+
+                # # TODO --最后输入实际是messages这个列表
+                # response = client.chat.completions.create(
+                #                 model="gpt-3.5-turbo-16k",
+                #                 messages=messages,
+                #                 temperature=1.0,
+                #                 max_tokens=2048,
+                #             )
+                # web_chinese = response.choices[0].message.content
+
+                # 法2--使用longchian summarize
+                docs = item.content[index]
+                docs = docs.replace('\n', '')
+             
+                docs = text_splitter_r.create_documents([docs])
+                print("item docs：", str(docs))
+                output_test += '【_item】'  + str(_item) + '\n'
+                output_test += '【docs】'  + str(docs) + '\n'
+                if len(str(docs)) > 3000:
+                     
+                    print("long Google docs", str(docs))
+                    chunks = text_splitter_r.split_documents(docs)            
+                    paper_summarize = chain.run(chunks)
+                    print("long Google summarizr", str(docs))
+                    output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
+                    # paper_summarize = [chain.run([chunk]) for chunk in chunks]
+                else:
+                # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
+                    # docs = text_splitter_r.create_documents(docs)
+                    print("short Google docs", str(docs))
+                    paper_summarize = chain.run(docs)
+                    output_test += '【!!paper_summarize】'  + str(paper_summarize) + '\n'
+
+                # google 简化
+                messages[0]['content'] = system_messages['English'][0]
+                messages[1]['content'] = str(paper_summarize)
+
+                # TODO --最后输入实际是messages这个列表
+                response = client.chat.completions.create(
+                                model="gpt-3.5-turbo-16k",
+                                messages=messages,
+                                temperature=1.0,
+                                max_tokens=2048,
+                            )
+                paper_summarize = response.choices[0].message.content
+
+                item.get_content(str(paper_summarize))
+                
+
                 if language == 'Chinese': 
-
-                    # # 法1--使用gpt模型summarize
-                    # messages[0]['content'] = system_messages['English'][2]
-                    # messages[1]['content'] = item.content[index]
-
-                    # # TODO --最后输入实际是messages这个列表
-                    # response = client.chat.completions.create(
-                    #                 model="gpt-3.5-turbo-16k",
-                    #                 messages=messages,
-                    #                 temperature=1.0,
-                    #                 max_tokens=2048,
-                    #             )
-                    # web_chinese = response.choices[0].message.content
-
-                    # 法2--使用longchian summarize
-                    docs = item.content[index]
-                    output_test += '【_item】'  + _item + '\n'
-                    output_test += '【docs】'  + str(docs) + '\n'
-                    if len(str(docs)) > 3000:
-                        chunks = text_splitter_r.split_text(docs)            
-                        chunks = text_splitter_r.create_documents(chunks) 
-                        paper_summarize = chain.run(chunks)
-                        output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
-                        # paper_summarize = [chain.run([chunk]) for chunk in chunks]
-                    else:
-                    # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
-                        docs = text_splitter_r.create_documents(docs)
-                        # print("docs", docs)
-                        paper_summarize = chain.run(docs)
-                        output_test += '【paper_summarize】'  + str(paper_summarize) + '\n'
-
-                    # summaries = []
-                    # for chunk in chunks:
-                    #     print("chunk", chunk)
-                    #     summary = chain.run([chunk])
-                    #     summaries.append(summary) 
-                                             
-                    # print("docs:", docs, "\n", "summaries:", summaries, "\n")
-                    item.get_content(str(paper_summarize))
 
                     # 提取messsage中内容部分翻译网页信息为中文
                     messages[0]['content'] = system_messages['Chinese'][0]
@@ -193,10 +213,14 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                                     max_tokens=2048,
                                 )
                     title_chinese = response.choices[0].message.content
+                    output_test += '【title】'  + str(item.title[index]) + '\n'
                     output_test += '【title_chinese】'  + str(title_chinese) + '\n'
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'                    
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
+                
+                else:
+                    pass
 
     with open("output/output.txt", "w") as file:
         # 将字符串写入文件

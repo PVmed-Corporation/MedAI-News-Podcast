@@ -6,6 +6,7 @@ from gnews import GNews
 # from pytube import Playlist
 from youtubesearchpython import Playlist, playlist_from_channel_id
 from dateutil import parser
+from datetime import datetime, timedelta
 
 # 时间处理函数
 def unify_time(input_time):
@@ -13,20 +14,29 @@ def unify_time(input_time):
     web_time = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
     return web_time
 
-def check_date_match(paper_time, current_time):
-    # 提取日期部分（前10个字符）进行比较
+def check_date_match(paper_time, current_time, day):
+    
     paper_date = paper_time[:10]
-    current_date = current_time[:10]
+
+    if day == "today":
+        # 提取当天
+        juedge_time = current_time[:10]
+    
+    else:
+        # 提取前一天
+        current_time_ = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S')
+        juedge_time = str(current_time_ - timedelta(days=1))
+        juedge_time = juedge_time[:10]
 
     # 检查日期部分是否一致
-    if paper_date == current_date:
+    if paper_date == juedge_time:
         return True
     else:
         return False
 
 
 # 使用requests和beautifulsoup的函数
-def get_websit_info(url, tag_name, class_name, process_type):
+def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
     # Make a request to a web page, and return the status code
 
     headers = {
@@ -37,7 +47,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
     print("response:", response)
     response.encoding = response.apparent_encoding
     web_time = ''
-    local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+
     print("local_time:", local_time)
     # Check the status code
     if response.status_code == 200:
@@ -153,36 +163,48 @@ def get_websit_info(url, tag_name, class_name, process_type):
             print("articles:", articles)
             web_time = soup.find('time', class_='js-time-ago').get_text(strip=True)
             web_time = unify_time(web_time)
-            if articles:                
-                web_titile = articles.get('alt')
-                web_link = url + articles.get('href')
+            if check_date_match(web_time, local_time, day) == True:
+                if articles:                
+                    web_titile = articles.get('alt')
+                    web_link = url + articles.get('href')
+                    # process_type.get_page(web_link, web_titile, web_time)
+                else:
+                    print("Couldn't find the target post URL.")
+                    raise ValueError  
             else:
-                print("Couldn't find the target post URL.")
-                raise ValueError  
-            # else:
-            #     print("Time is not valid:", "web_time is: ", web_time, "local_time is: ", local_time)
-            #     url = "1"
-            #     web_titile = "1"
-            #     web_link = "1"
-            #     web_time = "1"
+                print("Time is not valid:", "web_time is: ", web_time, "local_time is: ", local_time)
+                url = None
+                web_titile = None
+                web_link = None
+                web_time = None
+                process_type = None
 
         # 爬取paper with code信息
         elif process_type == "paperwithcode":  
             articles = soup.find(class_=class_name).find('h1')
-            web_time = soup.find(class_=class_name).find('span', class_='author-name-text item-date-pub').get_text()
+            # TODO --0104有报错需要修改位置
+            # web_time = soup.find(class_=class_name).find('span', class_='author-name-text item-date-pub').get_text()
+            web_time = "20240103"
             web_time = unify_time(web_time)
             print("articles:", articles)
 
-            if articles:
-                # 提取 href 值和标题文本
-                web_link = "https://paperswithcode.com" + articles.a['href']
-                web_titile = articles.a.get_text()
+            if check_date_match(web_time, local_time, day) == True:
+                if articles:
+                    # 提取 href 值和标题文本
+                    web_link = "https://paperswithcode.com" + articles.a['href']
+                    web_titile = articles.a.get_text()
+                    
+                else:
+                    print("Couldn't find the target post URL.")
+                    raise ValueError
+  
             else:
-                print("Couldn't find the target post URL.")
-                raise ValueError   
+                print("Time is not valid:", "web_time is: ", web_time, "local_time is: ", local_time)
+                url = None
+                web_titile = None
+                web_link = None
+                web_time = None
 
-
-     
          
         # auntminnie
         elif process_type == "auntminnie":
@@ -197,6 +219,14 @@ def get_websit_info(url, tag_name, class_name, process_type):
             soup = BeautifulSoup(response.content, 'html.parser')
             web_time = soup.find(class_="author-published-node__content-published").get_text()
             web_time = unify_time(web_time)
+            if check_date_match(web_time, local_time, day) == True:
+                pass
+            else:
+                print("Time is not valid:", "web_time is: ", web_time, "local_time is: ", local_time)
+                url = None
+                web_titile = None
+                web_link = None
+                web_time = None
 
         # mobi
         elif process_type == "mobihealthnews":
@@ -206,6 +236,14 @@ def get_websit_info(url, tag_name, class_name, process_type):
             web_titile = a_tag.get_text()
             web_time = soup.find('ul', class_='sponsored-author-create top-story').find('li', class_="last").get_text(strip=True)
             web_time = unify_time(web_time)
+            if check_date_match(web_time, local_time, day) == True:
+                pass
+            else:
+                print("Time is not valid:", "web_time is: ", web_time, "local_time is: ", local_time)
+                url = None
+                web_titile = None
+                web_link = None
+                web_time = None
 
 
         # natureBME
@@ -215,8 +253,9 @@ def get_websit_info(url, tag_name, class_name, process_type):
             web_link = a_tag.get('href')
             web_titile = a_tag.get_text()
 
-        
         return web_link, web_titile, web_time 
+    
+    
     
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
@@ -235,7 +274,7 @@ def get_arxiv_summary(_arxiv, query, max_results):
     
     for result in search.results():
         web_time = unify_time(str(result.published))
-        _arxiv.get_arxiv_page(result.entry_id, result.title, web_time)
+        _arxiv.get_page(result.entry_id, result.title, web_time)
         # _arxiv.get_content(result.summary)
 
     return
@@ -265,7 +304,7 @@ def fetch_gnews_links(_google, query, max_results=3):
         web_time = unify_time(gn.get('published date'))
         _google.get_page(gn.get('url'), gn.get('title'), web_time)
         article = google_news.get_full_article(gn['url'])
-        article.download()
+        # article.download()
         print("gnews article:", article.text)
         _google.get_content(article.text)
 
