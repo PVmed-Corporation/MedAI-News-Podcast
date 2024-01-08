@@ -25,7 +25,7 @@ def check_date_match(paper_time, current_time, day):
     
     else:
         # 提取前一天
-        current_time_ = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S')
+        current_time_ = datetime.strptime(current_time, '%Y-%m-%d-%H-%M-%S')
         juedge_time = str(current_time_ - timedelta(days=1))
         juedge_time = juedge_time[:10]
 

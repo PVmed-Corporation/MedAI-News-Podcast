@@ -130,7 +130,7 @@ if __name__ == '__main__':
         WebsiteInfo(url="https://www.jiqizhixin.com", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
         WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
         WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
         # # # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME"), # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
@@ -151,6 +151,6 @@ if __name__ == '__main__':
     # output_folder选择一个文件夹
     # format可选markdown或excel
     # day 可选today和yesterday
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown', trigger_time, "no-today")
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown', trigger_time, "today")
 
 

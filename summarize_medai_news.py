@@ -85,7 +85,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
         # Load the content from the given URL
         for index, _item in enumerate(item.url_link):
             # gnews special
-            if keys not in ["google", "机器之心"]:
+            if keys not in ["google"]:
                 # use Web loader to get info   
                 loader = WebBaseLoader(_item)
                 docs = loader.load()
@@ -125,28 +125,30 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
+                '''
+                # 处理中文的来源
+                # TODO: fix the content empty problem      
+                elif keys in ["机器之心"]:
+                    # 法1--使用gpt模型summarize
+                    output_test += '【keys】'  + str(keys) + '\n'
+                    output_test += '【title】'  + str(item.title[index]) + '\n'
+                    import pdb; pdb.set_trace()
+                    messages[0]['content'] = system_messages['Chinese'][3]
+                    messages[1]['content'] = item.content[index]
+                    
+                    output_test += '【Chinese content (item.content[index])】'  + str(item.content[index]) + '\n'
+                    
+                    web_summarize = gpt_completion_response(client, messages).replace("\n", "").replace("/n", "")
+                    output_test += '【Chinese content (web_summarize1)】'  + str(web_summarize) + '\n'
+                    
+                    #  # 扩展列表以确保它至少包含index+1个元素
+                    # if index >= len(item.content):
+                    #     item.content.extend([""] * (index + 1 - len(item.content)))
 
-            # 处理中文的来源
-            if keys in ["机器之心"]:
-                # 法1--使用gpt模型summarize
-                output_test += '【keys】'  + str(keys) + '\n'
-                output_test += '【title】'  + str(item.title[index]) + '\n'
-
-                messages[0]['content'] = system_messages['Chinese'][3]
-                messages[1]['content'] = item.content[index]
-                
-                output_test += '【Chinese content (item.content[index])】'  + str(item.content[index]) + '\n'
-                
-                web_summarize = gpt_completion_response(client, messages).replace("\n", "").replace("/n", "")
-                output_test += '【Chinese content (web_summarize1)】'  + str(web_summarize) + '\n'
-                
-                #  # 扩展列表以确保它至少包含index+1个元素
-                # if index >= len(item.content):
-                #     item.content.extend([""] * (index + 1 - len(item.content)))
-
-                item.content[index] = str(web_summarize)
-                output_test += '【Content after adding item.content】'  + str(item.content) + '\n'
-
+                    item.content[index] = str(web_summarize)
+                    output_test += '【Content after adding item.content】'  + str(item.content) + '\n'
+                '''
+            
             else:
                 # 法1--google 使用gpt模型summarize
                 output_test += '【keys】'  + str(keys) + '\n'
