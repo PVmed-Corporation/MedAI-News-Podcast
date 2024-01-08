@@ -60,6 +60,17 @@ text_splitter_r = RecursiveCharacterTextSplitter(
     length_function = len,
 )
 
+def gpt_completion_response(client, messages):
+    response = client.chat.completions.create(
+                model="gpt-3.5-turbo-16k",
+                messages=messages,
+                temperature=1.0,
+                max_tokens=4000,
+                )
+    gpt_output = response.choices[0].message.content
+    return gpt_output
+    
+
 
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
     # Load the summarization chain
@@ -74,7 +85,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
         # Load the content from the given URL
         for index, _item in enumerate(item.url_link):
             # gnews special
-            if keys not in ["google"]:
+            if keys not in ["google", "机器之心"]:
                 # use Web loader to get info   
                 loader = WebBaseLoader(_item)
                 docs = loader.load()
@@ -105,32 +116,47 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     messages[1]['content'] = item.content[index]
 
                     # TODO --最后输入实际是messages这个列表
-                    response = client.chat.completions.create(
-                                    model="gpt-3.5-turbo-16k",
-                                    messages=messages,
-                                    temperature=1.0,
-                                    max_tokens=2048,
-                                )
-                    web_chinese = response.choices[0].message.content
+                    web_chinese = gpt_completion_response(client, messages)
 
                     # 提取messsage中标题部分翻译网页信息为中文
                     messages[0]['content'] = system_messages['Chinese'][1]
                     messages[1]['content'] = item.title[index]
-                    response = client.chat.completions.create(
-                                    model="gpt-3.5-turbo-16k",
-                                    messages=messages,
-                                    temperature=1.0,
-                                    max_tokens=2048,
-                                )
-                    title_chinese = response.choices[0].message.content
+
+                    title_chinese = gpt_completion_response(client, messages)
                     output_test += '【title】'  + str(item.title[index]) + '\n'
                     output_test += '【title_chinese】'  + str(title_chinese) + '\n'
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
 
-            else:
+            # 处理中文的来源
+            if keys not in ["机器之心"]:
                 # 法1--使用gpt模型summarize
+                output_test += '【keys】'  + str(keys) + '\n'
+                output_test += '【title】'  + str(item.title[index]) + '\n'
+
+                messages[0]['content'] = system_messages['Chinese'][3]
+                messages[1]['content'] = item.content[index]
+                
+                output_test += '【Chinese content (item.content[index])】'  + str(item.content[index]) + '\n'
+                
+                web_summarize = gpt_completion_response(client, messages).replace("\n", "").replace("/n", "")
+                output_test += '【Chinese content (web_summarize1)】'  + str(web_summarize) + '\n'
+
+                print("item:", item)
+                
+                #  # 扩展列表以确保它至少包含index+1个元素
+                # if index >= len(item.content):
+                #     item.content.extend([""] * (index + 1 - len(item.content)))
+
+                item.content[index] = str(web_summarize)
+
+                print("Content after adding:", item.content)
+                output_test += '【Content after adding item.content】'  + str(item.content) + '\n'
+
+
+            else:
+                # 法1--google 使用gpt模型summarize
                 output_test += '【keys】'  + str(keys) + '\n'
                 output_test += '【title】'  + str(item.title[index]) + '\n'
 
@@ -138,22 +164,14 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 messages[1]['content'] = item.content[index]
                 
                 output_test += '【google content (item.content[index])】'  + str(item.content[index]) + '\n'
-
-                # TODO --最后输入实际是messages这个列表
-                response = client.chat.completions.create(
-                                model="gpt-3.5-turbo-16k",
-                                messages=messages,
-                                temperature=1.0,
-                                max_tokens=4800,
-                            )
                 
-                web_summarize = response.choices[0].message.content
+                web_summarize = gpt_completion_response(client, messages)
                 web_summarize = web_summarize.replace("\n", "").replace("/n", "")
                 output_test += '【google content (web_summarize1)】'  + str(web_summarize) + '\n'
 
                 # print("google web_summarize：", google_summarize)
                 print("item:", item)
-                print("Content before adding:", item.content)
+                # print("Content before adding:", item.content)
                 output_test += '【Content before adding item.content】'  + str(item.content) + '\n'
                 
                 #  # 扩展列表以确保它至少包含index+1个元素
@@ -171,32 +189,20 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     messages[0]['content'] = system_messages['Chinese'][0]
                     messages[1]['content'] = str(web_summarize)
 
-                    # TODO --最后输入实际是messages这个列表
-                    response = client.chat.completions.create(
-                                    model="gpt-3.5-turbo-16k",
-                                    messages=messages,
-                                    temperature=1.0,
-                                    max_tokens=2048,
-                                )
-                    web_chinese = response.choices[0].message.content
+                    web_chinese = gpt_completion_response(client, messages)
 
                     # 提取messsage中标题部分翻译网页信息为中文
                     messages[0]['content'] = system_messages['Chinese'][1]
                     messages[1]['content'] = item.title[index]
-                    response = client.chat.completions.create(
-                                    model="gpt-3.5-turbo-16k",
-                                    messages=messages,
-                                    temperature=1.0,
-                                    max_tokens=2048,
-                                )
-                    title_chinese = response.choices[0].message.content
+
+                    title_chinese = gpt_completion_response(client, messages)
                     output_test += '【title】'  + str(item.title[index]) + '\n'
                     output_test += '【title_chinese】'  + str(title_chinese) + '\n'
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'                    
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
                 else:
-                    print("add google ", "/n")
+                    print("add google ")
                 
      
     with open("output/output.txt", "w") as file:
@@ -209,17 +215,12 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
 
 
 def generate_paper_summary(client, info2summarize, language):
+
     # 归纳摘要前修改messages中的系统提示为system_message_0
     messages[0]['content'] = system_messages['English'][0]
     messages[1]['content'] = str(info2summarize)
     
-    response = client.chat.completions.create(
-                                model="gpt-3.5-turbo-16k",
-                                messages=messages,
-                                temperature=1.5,
-                                max_tokens=4000,
-                            )
-    generate_paper_summary = response.choices[0].message.content
+    generate_paper_summary = gpt_completion_response(client, messages)
 
     # 生成3个key points
     # 生成key points前修改messages中的系统提示为system_message_1
@@ -227,26 +228,14 @@ def generate_paper_summary(client, info2summarize, language):
     messages[0]['content'] = system_messages['English'][1]
     messages[1]['content'] = generate_paper_summary
 
-    response = client.chat.completions.create(
-                                model="gpt-3.5-turbo-16k",
-                                messages=messages,
-                                temperature=1.5,
-                                max_tokens=4000,
-                            )
-    generate_key_points = response.choices[0].message.content
+    generate_key_points = gpt_completion_response(client, messages)
     
     if language == 'Chinese':
         # 生成key points前修改messages中的系统提示为system_message_2
         messages[0]['content'] = system_messages['Chinese'][2]
         messages[1]['content'] = generate_key_points
         
-        response = client.chat.completions.create(
-                                model="gpt-3.5-turbo-16k",
-                                messages=messages,
-                                temperature=1.5,
-                                max_tokens=4000,
-                            )
-        generate_key_points = response.choices[0].message.content
+        generate_key_points = gpt_completion_response(client, messages)
 
     else:
         pass
