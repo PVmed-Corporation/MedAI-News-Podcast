@@ -59,7 +59,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
     
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=7) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
     news_items["google"] = _google
     
     # arxiv直接调用api
@@ -67,7 +67,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
     query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
 
-    get_arxiv_summary(_arxiv, query, max_results=7) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, query, max_results=2) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
 
     '''
@@ -84,7 +84,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
         attempts -= 1
     '''
     
-    # # TODO --YOUTUBE上的内容好像只对视频界面的文字做了归纳，没有调用字幕归纳的函数
+    # # TODO --YOUTUBE上的内容只对视频界面的文字做了归纳，没有调用字幕归纳的函数
     # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
     # _youtb = Source("youtube")
     # get_youtube_dojo(_youtb, channel_id)
@@ -180,9 +180,7 @@ if __name__ == '__main__':
     # language可以选择Chinese或English
     # output_folder选择一个文件夹
     # format可选markdown或excel
+    # day 可选today和yesterday
     medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown', "no-today")
 
-    #TODO：
-    # 1. web_time not complete in website
-    # 2. need to discuss how to use text_splitter_r
 

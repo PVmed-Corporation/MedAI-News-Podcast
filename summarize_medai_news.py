@@ -28,15 +28,15 @@ system_messages = {
         'content in one paragraph, and presenting it in 100 words.'
     ],
     'Chinese': [
-        '你是一位新闻翻译专家。请注意语言流畅、连贯性和中文表达习惯。避免多余或不相关的信息，'
-        '专注于将文字翻译成中文。生成的结果需符合新闻格式规范，突出文章核心内容于开篇, 用完整的一段话呈现, 控制内容在200字左右。',
+        '你是一位新闻翻译专家。请注意语言流畅,连贯性和中文表达习惯。避免多余或不相关的信息,'
+        '专注于将文字翻译成中文。生成的结果需符合新闻格式规范,突出文章核心内容于开篇, 用完整的一段话呈现, 控制内容在200字左右。',
         '你是一位新闻翻译专家。请将文字翻译成中文。生成的结果需符合新闻格式规范的中文标题。'
-        '请注意语言流畅、连贯性和中文表达习惯，以及学术名词的使用恰当。避免多余或不相关的信息，',
-        '你是个中文杂志编辑, 请将英文翻译成中文，注意中文表达的习惯和简练，生成3个中文的要点, 你说的话将被印在顶级新闻杂志的版面新闻上, 要检查并删除乱码和无关信息, '
+        '请注意语言流畅,连贯性和中文表达习惯, 以及学术名词的使用恰当。避免多余或不相关的信息,',
+        '你是个中文杂志编辑, 请将英文翻译成中文,注意中文表达的习惯和简练,生成3个中文的要点, 你说的话将被印在顶级新闻杂志的版面新闻上, 要检查并删除乱码和无关信息, '
         '保持内容的一致性, 不要返回多余信息',
-        '你是一位新闻专家。请对下面的文本进行总结，保留核心要点和关键信息，保持信息的准确和凝练，控制字数在200字左右，'
-        '接着请将文字翻译成中文。请注意语言流畅、连贯性和中文表达习惯，以及学术名词的使用恰当。避免多余或不相关的信息'
-        '最后对结果进行润色，生成的结果需符合新闻格式规范。'
+        '你是一位新闻专家。请对下面的文本进行总结,保留核心要点和关键信息,保持信息的准确和凝练,控制字数在200字左右,'
+        '接着请将文字翻译成中文。请注意语言流畅,连贯性和中文表达习惯,以及学术名词的使用恰当。避免多余或不相关的信息'
+        '最后对结果进行润色,生成的结果需符合新闻格式规范。'
     ],
 
     'Key':[ '针对以下内容, 提炼出2-5个关键词, 以简洁方式概括其要点'
@@ -91,19 +91,18 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 docs = loader.load()
                 output_test += '【_item】'  + str(_item) + '\n'
                 output_test += '【docs】'  + str(docs) + '\n'
-                # print("【keys:】", keys, '\n', 'docs:', docs, '\n\n')
-                print(len(str(docs)))
+
                 output_test += '【len(str(docs)】'  + str(len(str(docs))) + '\n'
                 if len(str(docs)) > 3000:
                     # 当文本总长度超过4000字符时执行拆分
                     chunks = text_splitter_r.split_documents(docs)
                     web_summarize = chain.run(chunks)
-                    output_test += '【web_summarize：】'  + str(web_summarize) + '\n'
+                    output_test += '【web_summarize:】'  + str(web_summarize) + '\n'
                  
                 else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                     web_summarize = chain.run(docs)
-                    output_test += '【paper_summarize】'  + str(web_summarize) + '\n'
+                    output_test += '【paper_summarize:】'  + str(web_summarize) + '\n'
             
 
                 # web_summarize = [chain.run([chunk]) for chunk in text_splitter_c.split_documents(docs)]
@@ -130,7 +129,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     item.get_trans_info(title_chinese, web_chinese)
 
             # 处理中文的来源
-            if keys not in ["机器之心"]:
+            if keys in ["机器之心"]:
                 # 法1--使用gpt模型summarize
                 output_test += '【keys】'  + str(keys) + '\n'
                 output_test += '【title】'  + str(item.title[index]) + '\n'
@@ -161,17 +160,16 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 output_test += '【title】'  + str(item.title[index]) + '\n'
 
                 messages[0]['content'] = system_messages['English'][2]
-                messages[1]['content'] = item.content[index]
-                
+                messages[1]['content'] = item.content[index]      
                 output_test += '【google content (item.content[index])】'  + str(item.content[index]) + '\n'
                 
+                # 得到google新闻的summary
                 web_summarize = gpt_completion_response(client, messages)
                 web_summarize = web_summarize.replace("\n", "").replace("/n", "")
                 output_test += '【google content (web_summarize1)】'  + str(web_summarize) + '\n'
 
                 # print("google web_summarize：", google_summarize)
                 print("item:", item)
-                # print("Content before adding:", item.content)
                 output_test += '【Content before adding item.content】'  + str(item.content) + '\n'
                 
                 #  # 扩展列表以确保它至少包含index+1个元素
@@ -180,17 +178,15 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
 
                 item.content[index] = str(web_summarize)
 
-                print("Content after adding:", item.content)
                 output_test += '【Content after adding item.content】'  + str(item.content) + '\n'
 
                 if language == 'Chinese': 
-
                     # 提取messsage中内容部分翻译网页信息为中文
                     messages[0]['content'] = system_messages['Chinese'][0]
                     messages[1]['content'] = str(web_summarize)
 
                     web_chinese = gpt_completion_response(client, messages)
-
+                    
                     # 提取messsage中标题部分翻译网页信息为中文
                     messages[0]['content'] = system_messages['Chinese'][1]
                     messages[1]['content'] = item.title[index]
@@ -202,7 +198,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)
                 else:
-                    print("add google ")
+                    print("add google English")
                 
      
     with open("output/output.txt", "w") as file:
@@ -223,8 +219,6 @@ def generate_paper_summary(client, info2summarize, language):
     generate_paper_summary = gpt_completion_response(client, messages)
 
     # 生成3个key points
-    # 生成key points前修改messages中的系统提示为system_message_1
-    # 输入应为上一段整理好的信息
     messages[0]['content'] = system_messages['English'][1]
     messages[1]['content'] = generate_paper_summary
 

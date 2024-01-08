@@ -183,8 +183,8 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
         elif process_type == "paperwithcode":  
             articles = soup.find(class_=class_name).find('h1')
             # TODO --0104有报错需要修改位置
-            # web_time = soup.find(class_=class_name).find('span', class_='author-name-text item-date-pub').get_text()
-            web_time = "20240103"
+            web_time = soup.find(class_=class_name).find('span', class_='author-name-text item-date-pub').get_text()
+            # web_time = "20240104"
             web_time = unify_time(web_time)
             print("articles:", articles)
 
