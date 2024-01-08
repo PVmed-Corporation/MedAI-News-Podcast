@@ -40,10 +40,9 @@ system_messages = {
     ],
 
     'Key':[ '针对以下内容, 提炼出2-5个关键词, 以简洁方式概括其要点'
-
     ]
-    
 }
+
 
 # 法一：按特殊字节分割的文档分割器，可能连贯性更好，但对网页这样乱码较多的内容不太适用
 text_splitter_c = CharacterTextSplitter(
@@ -53,6 +52,7 @@ text_splitter_c = CharacterTextSplitter(
     length_function=len,
     is_separator_regex=False,
 )
+
 # 法二：按字符数量的文档分割器，可能连贯性差一点，但是对网页和text这样多种形式的文本的普适性好
 text_splitter_r = RecursiveCharacterTextSplitter(
     chunk_size = 3000,
@@ -68,8 +68,8 @@ def gpt_completion_response(client, messages):
                 max_tokens=4000,
                 )
     gpt_output = response.choices[0].message.content
+
     return gpt_output
-    
 
 
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
@@ -98,16 +98,14 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     chunks = text_splitter_r.split_documents(docs)
                     web_summarize = chain.run(chunks)
                     output_test += '【web_summarize:】'  + str(web_summarize) + '\n'
-                 
+                
                 else:
                     # 当文本总长度不超过4000字符时，不执行拆分，直接处理整个文本
                     web_summarize = chain.run(docs)
                     output_test += '【paper_summarize:】'  + str(web_summarize) + '\n'
-            
 
                 # web_summarize = [chain.run([chunk]) for chunk in text_splitter_c.split_documents(docs)]
                 item.get_content(str(web_summarize))
-             
 
                 if language == 'Chinese': 
                     # 提取messsage中内容部分翻译网页信息为中文
@@ -141,18 +139,13 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 
                 web_summarize = gpt_completion_response(client, messages).replace("\n", "").replace("/n", "")
                 output_test += '【Chinese content (web_summarize1)】'  + str(web_summarize) + '\n'
-
-                print("item:", item)
                 
                 #  # 扩展列表以确保它至少包含index+1个元素
                 # if index >= len(item.content):
                 #     item.content.extend([""] * (index + 1 - len(item.content)))
 
                 item.content[index] = str(web_summarize)
-
-                print("Content after adding:", item.content)
                 output_test += '【Content after adding item.content】'  + str(item.content) + '\n'
-
 
             else:
                 # 法1--google 使用gpt模型summarize
@@ -169,7 +162,7 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 output_test += '【google content (web_summarize1)】'  + str(web_summarize) + '\n'
 
                 # print("google web_summarize：", google_summarize)
-                print("item:", item)
+                # print("item:", item)
                 output_test += '【Content before adding item.content】'  + str(item.content) + '\n'
                 
                 #  # 扩展列表以确保它至少包含index+1个元素
@@ -196,16 +189,11 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     output_test += '【title_chinese】'  + str(title_chinese) + '\n'
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'                    
                     # add the translation version to collector
-                    item.get_trans_info(title_chinese, web_chinese)
-                else:
-                    print("add google English")
-                
+                    item.get_trans_info(title_chinese, web_chinese)                
      
     with open("output/output.txt", "w") as file:
         # 将字符串写入文件
         file.write(output_test)
-
-    print("字符串已保存到output.txt文档中")
     
     return
 
@@ -230,10 +218,6 @@ def generate_paper_summary(client, info2summarize, language):
         messages[1]['content'] = generate_key_points
         
         generate_key_points = gpt_completion_response(client, messages)
-
-    else:
-        pass
-
     
     return generate_key_points
 

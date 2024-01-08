@@ -8,9 +8,6 @@ from generate_output import generate_result
 import time
 
 
-local_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-
-
 class Source(object):
     def __init__(self, name):
         self.name = name
@@ -26,30 +23,19 @@ class Source(object):
         self.trans_content = []
     
     def get_page(self, url_link, title, web_time):
-        # if check_date_match(web_time, local_time):
         self.url_link.append(url_link)
         self.title.append(title)
         self.web_time.append(web_time)
-        # else:
-        #     print("Not adding information for URL:", url_link)
 
     def get_content(self, content):
-        print("get content have been used")
-
         self.content.append(content)
-
 
     def get_trans_info(self, trans_title, trans_content):
         self.trans_title.append(trans_title)
         self.trans_content.append(trans_content)
 
 
-def medai_news_podcast_api(websites, token_path, language, output_folder, format, day):
-
-    _time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
-    with open(token_path) as f:
-            private_token = f.readline()
-
+def medai_news_podcast_api(websites, token_path, language, output_folder, format, trigger_time, day):  
     # 1. collect the information
     news_items = {}
     
@@ -63,26 +49,12 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     news_items["google"] = _google
     
     # arxiv直接调用api
-    _arxiv = Source("arxiv")
-    # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
     query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
+    # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
 
+    _arxiv = Source("arxiv")
     get_arxiv_summary(_arxiv, query, max_results=2) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
-
-    '''
-    attempts = 3
-    while attempts > 0:
-        result = get_arxiv_summary(_arxiv, query, max_results=5)
-        print("1 arxiv result:", result)
-        if result is not None:
-            print("2 arxiv result:", result)
-            break
-        # 等待 2 秒再尝试获取
-        print("3 arxiv result:", result)
-        time.sleep(1)
-        attempts -= 1
-    '''
     
     # # TODO --YOUTUBE上的内容只对视频界面的文字做了归纳，没有调用字幕归纳的函数
     # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
@@ -93,19 +65,18 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     # 遍历网站信息列表并获取信息
     for site in websites:
         # TODO: 按照最新内容，可能不止一个link
-        web_link, web_title, web_time = get_websit_info(site.url, site.tag_name, site.class_name, site.process_type, local_time, day)
-        print(web_link, web_title, web_time)
-        if web_link == None:
-            pass
-
-        else:
+        web_link, web_title, web_time = get_websit_info(site.url, site.tag_name, site.class_name, site.process_type, trigger_time, day)
+        if web_link is not None:
             _web = Source(site.process_type)
             _web.get_page(web_link, web_title, web_time)
             news_items[site.process_type] = _web
 
-        print(f"在{site.process_type}网站爬取到的link和title和time是:\n{web_link}: {web_title}\n 发布时间是: {web_time}\n")
+            print(f"在{site.process_type}网站爬取到的link和title和time是:\n{web_link}: {web_title}\n 发布时间是: {web_time}\n")
 
+    # --------------------------------------------------------------------------------------------
     # 2. summarize the content
+    with open(token_path) as f:
+            private_token = f.readline()
     client = OpenAI(api_key=private_token)
     llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k", openai_api_key=private_token)
     
@@ -114,12 +85,8 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     
     # 修改messages中的内容部分为全部网页的summary
     summary_whole = [] # [item['web_summarize'] for item in news_items]
-    
     for keys in news_items:
-        
         print("info from:", keys)
-        print("info news_items[keys].title:", news_items[keys].title)
-
         for ii, _ in enumerate(news_items[keys].title):
             print(ii)
             # print("url:", news_items[keys].url_link[ii])
@@ -140,13 +107,12 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
     print("LLM_paper_summary: \n", LLM_paper_summary)
 
-    # 3. generate the podcast
-    # 生成markdown文件
-    
+    # -----------------------------------------------------------------------------------
+    # 3. generate the podcast to markdown file
     if format == 'excel':
-        output_file_path = output_folder + language + '_'+ _time + '_output.xlsx'
+        output_file_path = output_folder + language + '_'+ trigger_time + '_output.xlsx'
     else:
-        output_file_path = output_folder + language + '_'+ _time + '_output.md'
+        output_file_path = output_folder + language + '_'+ trigger_time + '_output.md'
 
     generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
     
@@ -177,10 +143,14 @@ if __name__ == '__main__':
         # # WebsiteInfo(url="https://le4ews xfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
     ]
     
+    # the local time when we run the code
+    # check the time zone where you are
+    trigger_time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+
     # language可以选择Chinese或English
     # output_folder选择一个文件夹
     # format可选markdown或excel
     # day 可选today和yesterday
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown', "no-today")
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown', trigger_time, "no-today")
 
 

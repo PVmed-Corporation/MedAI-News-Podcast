@@ -26,7 +26,6 @@ def generate_html_snippet(news_items, keys, language, ):
         markdown_part += f"<span style='font-size: 12px; font-family: news-romans;'>{web_time}</span>\n\n"
         markdown_part += f"<span style='font-size: 16px; font-family: news-romans;'>{content}</span>\n\n"
         
-    
     return markdown_part
 
 
@@ -62,21 +61,16 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
         markdown_all = " "
         markdown_all += """<h1 style="color: black; text-align: center; margin-top: 50px;"> <span style='color: #FF4B4B; font-size: 1.25em;'> Med-AI News</span> Podcast</h1>\n\n"""
         markdown_all += """## Key Points of Today's News\n\n"""
-
         markdown_all += LLM_paper_summary + '''\n\n'''
 
         # 正文的信息排版
         for ii, keys in enumerate(news_items):
             print(keys,"加入md文件")
-            
             if ii<2:
                 markdown_all += f"""## Paper from {keys} \n\n"""
-
-                # markdown_all += generate_html_snippet(news_items, keys, language)
             else:
                 if ii == 2:
                     markdown_all += """## News from Other Websites \n\n"""
-
             markdown_all += generate_html_snippet(news_items, keys, language)
 
         with open(output_path, 'w', encoding='utf-8') as file:
