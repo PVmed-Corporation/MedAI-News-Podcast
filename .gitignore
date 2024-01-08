@@ -23,6 +23,6 @@ debug
 *.pkl
 *.log
 *.txt
-
+output
 
 

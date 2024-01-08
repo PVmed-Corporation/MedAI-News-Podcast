@@ -9,11 +9,20 @@ messages = [{'role': 'system',
 
 system_message = ['You are a very talented editor, skilled at consolidatingfragmented'
                   'information and introductions into a cohesive script, without missing'
-                  'any details. Compile the news article based on the information given ',
+                  'any details, control the content about 100 words. '
+                  'Compile the news article based on the information given.',
                   'You are a linguist, skilled in summarizing textual content and presenting'
                   ' it in 3 bullet points using markdown. ',
-                  '你是个语言学家，擅长把英文翻译成中文。要注意表达的流畅和使用中文的表达习惯。'
-                  '不要返回多余的信息，只把文字翻译成中文。']
+                  '你是个翻译学家。要注意语言的流畅， 通顺和中文的表达习惯。'
+                  '不要返回多余的和无关的信息，只把文字翻译成中文。',
+                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 你要检查并删除乱码和无关信息'
+                  '生成中文标题，保持内容的一致性直接返回报纸上呈现的标题， 不要返回多余信息，无法翻译的英文保持原文',
+                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息,',
+                  '生成一段中文总结，保持内容的一致性,不超过250字'
+                  '直接返回返回报纸上应该有的报道,不要返回多余信息',
+                  '你是个中文杂志编辑， 你说的话将被印在顶级新闻杂志上， 要检查并删除乱码和无关信息，'
+                  '生成三个中文的要点， 保持内容的一致性,不要返回多余信息'               
+                    ]
 
 
 def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"):
@@ -25,14 +34,14 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
         item = news_items[keys]
         # Load the content from the given URL
         for index, _item in enumerate(item.url_link):
-            if keys not in ["arxiv"]:
-                # use Web loader to get info   
-                loader = WebBaseLoader(_item)
-                docs = loader.load()
+            # if keys not in ["arxiv"]:
+            # use Web loader to get info   
+            loader = WebBaseLoader(_item)
+            docs = loader.load()
                 
-                # Run the chain on the loaded documents
-                web_summarize = chain.run(docs)
-                item.get_content(web_summarize)
+            # Run the chain on the loaded documents
+            web_summarize = chain.run(docs)
+            item.get_content(web_summarize)
 
             if language == 'Chinese': 
                 # 提取messsage中内容部分翻译网页信息为中文
@@ -43,23 +52,47 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                 response = client.chat.completions.create(
                                 model="gpt-3.5-turbo-16k",
                                 messages=messages,
-                                temperature=1.5,
+                                temperature=1.0,
                                 max_tokens=2048,
                             )
                 web_chinese = response.choices[0].message.content
 
+                # 检查信息正确
+                messages[0]['content'] = system_message[4]
+                messages[1]['content'] = web_chinese
+
+                response = client.chat.completions.create(
+                                model="gpt-3.5-turbo-16k",
+                                messages=messages,
+                                temperature=1.0,
+                                max_tokens=2048,
+                            )
+                web_chinese_r = response.choices[0].message.content
+                
                 # 提取messsage中标题部分翻译网页信息为中文
+                messages[0]['content'] = system_message[3]
                 messages[1]['content'] = item.title[index]
                 response = client.chat.completions.create(
                                 model="gpt-3.5-turbo-16k",
                                 messages=messages,
-                                temperature=1.5,
+                                temperature=1.0,
                                 max_tokens=2048,
                             )
                 title_chinese = response.choices[0].message.content
+
+                # # 提取messsage中标题部分翻译网页信息为中文
+                # messages[0]['content'] = system_message[3]
+                # messages[1]['content'] = title_chinese
+                # response = client.chat.completions.create(
+                #                 model="gpt-3.5-turbo-16k",
+                #                 messages=messages,
+                #                 temperature=1.0,
+                #                 max_tokens=2048,
+                #             )
+                # title_chinese_r = response.choices[0].message.content
                 
                 # add the translation version to collector
-                item.get_trans_info(title_chinese, web_chinese)
+                item.get_trans_info(title_chinese, web_chinese_r)
     
     return
 
@@ -103,6 +136,18 @@ def generate_paper_summary(client, info2summarize, language):
                                 max_tokens=4000,
                             )
         generate_key_points = response.choices[0].message.content
+
+        # # 检查信息正确
+        # messages[0]['content'] = system_message[5]
+        # messages[1]['content'] = generate_key_points
+
+        # response = client.chat.completions.create(
+        #                 model="gpt-3.5-turbo-16k",
+        #                 messages=messages,
+        #                 temperature=1.0,
+        #                 max_tokens=2048,
+        #             )
+        # generate_key_points = response.choices[0].message.content
     
     return generate_key_points
 

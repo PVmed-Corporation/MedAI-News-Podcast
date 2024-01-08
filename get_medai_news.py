@@ -13,12 +13,13 @@ def get_websit_info(url, tag_name, class_name, process_type):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.3'
     }
     response = requests.get(url, headers=headers)
-
+    response.encoding = response.apparent_encoding
+    
     # Check the status code
     if response.status_code == 200:
         # Parse the HTML content
         soup = BeautifulSoup(response.content, 'html.parser')
-
+        
         # 爬取OPENAI_link
         if process_type == "openai": 
             # 查找具有特定类名的<a>标签
@@ -27,6 +28,7 @@ def get_websit_info(url, tag_name, class_name, process_type):
                 # 将基本 URL 与相对路径结合
                 web_link = url + target_link['href']
                 response = requests.get(web_link, headers=headers)
+                response.encoding = response.apparent_encoding
                 soup = BeautifulSoup(response.content, 'html.parser')
                 h1_tag = soup.find("h1", class_="f-display-2")
                 if h1_tag:
@@ -36,14 +38,15 @@ def get_websit_info(url, tag_name, class_name, process_type):
                     raise ValueError
             else:
                 print("Couldn't find the target post URL.")
-                raise ValueError                
-        
+                raise ValueError  
+               
         # 爬取lexfridman_link
         elif process_type == "lexfridman": 
             transcript_link_element = soup.find(tag_name, string="Transcript")
             if transcript_link_element:
                 web_link = transcript_link_element['href']
                 response = requests.get(web_link, headers=headers)
+                response.encoding = response.apparent_encoding
                 soup = BeautifulSoup(response.content, 'html.parser')
                 h1_tag = soup.find("h1", class_="entry-title")
                 if h1_tag:
@@ -109,7 +112,6 @@ def get_websit_info(url, tag_name, class_name, process_type):
                 print("Couldn't find the target post URL.")
                 raise ValueError
 
-        # TODO --连接问题，timeout -- 待用云服务器再尝试
         # 爬取techcrunch link & title
         elif process_type == "techcrunch":  
             # 由于网站可能有多个这样的链接，我们只选择第一个匹配的项
@@ -120,19 +122,52 @@ def get_websit_info(url, tag_name, class_name, process_type):
             else:
                 print("Couldn't find the target post URL.")
                 raise ValueError
-        else:
-            print("Invalid process type.")
-            raise ValueError
         
+        # 爬取paper with code信息
+        elif process_type == "paperwithcode":  
+            articles = soup.find(class_=class_name).find('h1')
+            if articles:
+                # 提取 href 值和标题文本
+                web_link = url + articles.a['href']
+                web_titile = articles.a.get_text()
+            else:
+                print("Couldn't find the target post URL.")
+                raise ValueError        
+        
+        # 爬取机器之心信息
+        elif process_type == "机器之心":  
+            articles = soup.find(class_=class_name).find("a")
+            if articles:                
+                web_titile = articles.get('alt')
+                web_link = url + articles.get('href')
+            else:
+                print("Couldn't find the target post URL.")
+                raise ValueError  
+        
+        # auntminnie
+        elif process_type == "auntminnie" or process_type == "mobihealthnews":
+            soup = BeautifulSoup(response.content, 'html.parser')   
+            a_tag = soup.find(class_=class_name).find(tag_name)
+            web_link = url + a_tag.get('href')
+            web_titile  = a_tag.get_text()
+
+        # natureBME
+        elif process_type == "natureBME" :
+            soup = BeautifulSoup(response.content, 'html.parser')   
+            a_tag = soup.find(class_=class_name).find(tag_name)
+            web_link = a_tag.get('href')
+            web_titile = a_tag.get_text()
+
         return web_link, web_titile   
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
         raise ValueError
+        
 
 # 使用内置包的函数
 def get_arxiv_summary(_arxiv, max_results):
     search = arxiv.Search(
-        query="AI, LLM, machine learning, NLP",
+        query="medical imaging, CV, deeep learning",
         #max_results=st.session_state.arxiv,
         max_results=max_results,
         sort_by=arxiv.SortCriterion.SubmittedDate
@@ -140,10 +175,9 @@ def get_arxiv_summary(_arxiv, max_results):
     
     for result in search.results():
         _arxiv.get_page(result.entry_id, result.title)
-        _arxiv.get_content(result.summary)
+        # _arxiv.get_content(result.summary)
 
     return
-
 
 def get_youtube_dojo(_youtb, channel_id):
     # use Playlist get info
@@ -161,7 +195,7 @@ def get_youtube_dojo(_youtb, channel_id):
 
 def fetch_gnews_links(_google, query, max_results=5):
     # 初始化 GNews
-    google_news = GNews(language='en', country='US', period='1d',
+    google_news = GNews(language='en', country='cn', period='1d',
                         start_date=None, end_date=None,
                         max_results=max_results, exclude_websites=None)
 
