@@ -3,10 +3,11 @@ from get_medai_news import get_websit_info, get_arxiv_summary, \
     get_youtube_dojo, fetch_gnews_links
 from summarize_medai_news import LLM_processing_content, generate_paper_summary
 from openai import OpenAI
-from langchain.chat_models import ChatOpenAI
+# from langchain.chat_models import ChatOpenAI
+# from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from generate_output import generate_result
 import time
-
 
 class Source(object):
     def __init__(self, name):
@@ -41,19 +42,21 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     
     # google news
     query = "AI medical, clinical image technology, medical image"
-    # query = "meidcal image"
-    # # query = "(medical imaging, AI) OR (MRI AND image processing technology) OR (medicine AND imaging)"
+    # query = "MRI AI"
+    # query = "clinica image AI"
+    # query = "medical CV"
     
     _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=2) # max_results可以自由改动
+    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
     news_items["google"] = _google
     
     # arxiv直接调用api
-    query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV)' 
+    query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV) OR ("ai" AND "medical") OR "image segentation"' 
+    # query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("medical" AND cs.CV) OR ("clinical image" AND cs.CV)'
     # query = "Liver tumor segmentation OR ('tumor' AND (cs.CV OR eess.IV))"
 
     _arxiv = Source("arxiv")
-    get_arxiv_summary(_arxiv, query, max_results=2) # max_results可以自由改动
+    get_arxiv_summary(_arxiv, query, max_results=3) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
     
     # # TODO --YOUTUBE上的内容只对视频界面的文字做了归纳，没有调用字幕归纳的函数
@@ -85,6 +88,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     
     # 修改messages中的内容部分为全部网页的summary
     summary_whole = [] # [item['web_summarize'] for item in news_items]
+
     for keys in news_items:
         print("info from:", keys)
         for ii, _ in enumerate(news_items[keys].title):
@@ -105,6 +109,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
         
     # 提取所有信息里面的关键放在开头
     LLM_paper_summary = generate_paper_summary(client, summary_whole, language)
+
     print("LLM_paper_summary: \n", LLM_paper_summary)
 
     # -----------------------------------------------------------------------------------
@@ -115,7 +120,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
         output_file_path = output_folder + language + '_'+ trigger_time + '_output.md'
 
     generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
-    
+
     return
 
 
@@ -130,7 +135,7 @@ if __name__ == '__main__':
         WebsiteInfo(url="https://www.jiqizhixin.com", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
         WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
         WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title", process_type="mobihealthnews"), # mobihealthnews
+        # # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title news", process_type="mobihealthnews"), # mobihealthnews
         # # # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME"), # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
@@ -149,8 +154,9 @@ if __name__ == '__main__':
 
     # language可以选择Chinese或English
     # output_folder选择一个文件夹
-    # format可选markdown或excel
+    # format可选markdown, markdown_dingding或excel
     # day 可选today和yesterday
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown', trigger_time, "today")
 
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown_dingding', trigger_time, "2today")
+    # TODO -- 时间不完整，分词器用法需讨论
 

@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def generate_html_snippet(news_items, keys, language, ):
     markdown_part = ''
     
@@ -28,6 +27,30 @@ def generate_html_snippet(news_items, keys, language, ):
         
     return markdown_part
 
+def generate_dingding_snippet(news_items, keys, language, ):
+    markdown_part = ''
+    
+    for ii, _ in enumerate(news_items[keys].title):
+        link = news_items[keys].url_link[ii]
+        if language == 'English':
+            title = news_items[keys].title[ii]
+            content = news_items[keys].content[ii]
+            web_time = news_items[keys].web_time[ii]
+        else:
+            title = news_items[keys].trans_title[ii]
+            content = news_items[keys].trans_content[ii]
+            web_time = news_items[keys].web_time[ii]
+        
+        html_snippet = (
+            f"### [{title}   ]({link})"
+            f"  {keys}\n\n"
+        )
+        
+        markdown_part += html_snippet
+        markdown_part += f"{web_time}\n\n"
+        markdown_part += f"{content}\n\n"
+        
+    return markdown_part
 
 def generate_result(news_items, language, LLM_paper_summary, format, output_path):
     if format == "excel":
@@ -56,6 +79,29 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
             df.to_excel(writer) 
         print("excel文件已生成: ", output_path) 
 
+    elif format == "markdown_dingding":
+        # 使用加载的实例
+        markdown_all = " "
+        markdown_all += """# Med-AI News Podcast\n\n"""
+        markdown_all += """## Key Points of Today's News\n\n"""
+        markdown_all += LLM_paper_summary + '''\n\n'''
+
+        # 正文的信息排版
+        for ii, keys in enumerate(news_items):
+            print(keys,"加入md文件")
+            if ii<2:
+                markdown_all += f"""## Paper from {keys} \n\n"""
+            else:
+                if ii == 2:
+                    markdown_all += """## News from Other Websites \n\n"""
+            markdown_all += generate_dingding_snippet(news_items, keys, language)
+
+        with open(output_path, 'w', encoding='utf-8') as file:
+            file.write(markdown_all)
+            print("Markdown文件已生成: ", output_path) 
+        return markdown_all
+
+
     else:
         # 使用加载的实例
         markdown_all = " "
@@ -77,4 +123,3 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
             file.write(markdown_all)
             print("Markdown文件已生成: ", output_path) 
         return markdown_all
-

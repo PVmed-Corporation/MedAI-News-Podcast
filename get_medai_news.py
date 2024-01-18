@@ -225,7 +225,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
         # mobi
         elif process_type == "mobihealthnews":
             soup = BeautifulSoup(response.content, 'html.parser')   
-            web_time = soup.find('ul', class_='sponsored-author-create top-story').find('li', class_="last").get_text(strip=True)
+            web_time = soup.find('div', class_='views-field views-field-created-1').find('li', class_="last").get_text(strip=True)
             if check_date_match(web_time, local_time, day) == True:
                 a_tag = soup.find(class_=class_name).find(tag_name)
                 web_link = url + a_tag.get('href')
@@ -237,7 +237,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
                 web_titile = None
                 web_link = None
                 web_time = None
-
+        
         # natureBME
         elif process_type == "natureBME" :
             soup = BeautifulSoup(response.content, 'html.parser')   

@@ -1,5 +1,6 @@
 from langchain.chains.summarize import load_summarize_chain
-from langchain.document_loaders import WebBaseLoader
+# from langchain.document_loaders import WebBaseLoader
+from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
@@ -56,7 +57,7 @@ text_splitter_c = CharacterTextSplitter(
 # 法二：按字符数量的文档分割器，可能连贯性差一点，但是对网页和text这样多种形式的文本的普适性好
 text_splitter_r = RecursiveCharacterTextSplitter(
     chunk_size = 3000,
-    chunk_overlap = 50,
+    chunk_overlap = 100,
     length_function = len,
 )
 
