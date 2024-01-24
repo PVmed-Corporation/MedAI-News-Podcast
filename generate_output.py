@@ -9,16 +9,18 @@ def generate_html_snippet(news_items, keys, language, ):
             title = news_items[keys].title[ii]
             content = news_items[keys].content[ii]
             web_time = news_items[keys].web_time[ii]
+            publisher = news_items[keys].publisher[ii]
         else:
             title = news_items[keys].trans_title[ii]
             content = news_items[keys].trans_content[ii]
             web_time = news_items[keys].web_time[ii]
+            publisher = news_items[keys].publisher[ii]
         
         html_snippet = (
             f"### <a href=\"{link}\" style=\"color: #2859C0; text-decoration: none; "
             f"font-size: 17px; font-weight: bold; font-family: Arial;\"> {title}</a>"
             f"<span style=\"margin-left: 7px; background-color: white; padding: 0px 8px; border: 1px solid rgb(251, 88, 88)"
-            f"border-radius: 13px; font-size: 12px; color: rgb(251, 88, 88)\">{keys}</span>\n\n"
+            f"border-radius: 13px; font-size: 12px; color: rgb(251, 88, 88)\">{publisher}</span>\n\n"
         )
         
         markdown_part += html_snippet
@@ -36,14 +38,17 @@ def generate_dingding_snippet(news_items, keys, language, ):
             title = news_items[keys].title[ii]
             content = news_items[keys].content[ii]
             web_time = news_items[keys].web_time[ii]
+            publisher = news_items[keys].publisher[ii]
+
         else:
             title = news_items[keys].trans_title[ii]
             content = news_items[keys].trans_content[ii]
             web_time = news_items[keys].web_time[ii]
+            publisher = news_items[keys].publisher[ii]
         
         html_snippet = (
             f"### [{title}   ]({link})"
-            f"  {keys}\n\n"
+            f"  {publisher}\n\n"
         )
         
         markdown_part += html_snippet
@@ -89,10 +94,10 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
         # 正文的信息排版
         for ii, keys in enumerate(news_items):
             print(keys,"加入md文件")
-            if ii<2:
+            if ii<1:
                 markdown_all += f"""## Paper from {keys} \n\n"""
             else:
-                if ii == 2:
+                if ii == 1:
                     markdown_all += """## News from Other Websites \n\n"""
             markdown_all += generate_dingding_snippet(news_items, keys, language)
 

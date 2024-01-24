@@ -157,6 +157,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
         elif process_type == "机器之心":  
             articles = soup.find(class_=class_name).find("a")
             web_time = soup.find('time', class_='js-time-ago').get_text(strip=True)
+            
             # TODO: check the articles and web_time are exist
             web_time = unify_time(web_time)
             
@@ -164,7 +165,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
                 if articles:                
                     web_titile = articles.get('alt')
                     web_link = url + articles.get('href')
-                    # process_type.get_page(web_link, web_titile, web_time)
+
                 else:
                     print("Couldn't find the target post URL.")
                     raise ValueError  
@@ -175,6 +176,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
                 web_link = None
                 web_time = None
                 process_type = None
+
 
         # 爬取paper with code信息
         elif process_type == "paperwithcode":  
@@ -220,15 +222,18 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
                 web_link = None
                 web_time = None
         
-        # TODO: complete first
-        '''
+        
+        
         # mobi
         elif process_type == "mobihealthnews":
-            soup = BeautifulSoup(response.content, 'html.parser')   
-            web_time = soup.find('div', class_='views-field views-field-created-1').find('li', class_="last").get_text(strip=True)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            web_time = soup.find('div', class_='views-field views-field-created-1').get_text(strip=True)
+            web_time = unify_time(web_time)
+            
             if check_date_match(web_time, local_time, day) == True:
                 a_tag = soup.find(class_=class_name).find(tag_name)
                 web_link = url + a_tag.get('href')
+                print("mobi web_link here:", web_link)
                 web_titile = a_tag.get_text()
                 web_time = unify_time(web_time)
             else:
@@ -237,16 +242,33 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
                 web_titile = None
                 web_link = None
                 web_time = None
-        
+
+        '''
+        # TODO: erroe here
         # natureBME
         elif process_type == "natureBME" :
-            soup = BeautifulSoup(response.content, 'html.parser')   
-            a_tag = soup.find(class_=class_name).find(tag_name)
-            web_link = a_tag.get('href')
-            web_titile = a_tag.get_text()
+            soup = BeautifulSoup(response.content, 'html.parser') 
+            output_test_nature =  str(response.content) 
+            web_time = "2024-01-24"
+            # web_time = soup.find('div', class_="c-article-header")
+            print("natureBME time:", web_time)
+            if check_date_match(web_time, local_time, day) == True:
+                a_tag = soup.find(class_=class_name).find(tag_name)
+                web_link = url + a_tag.get('href')
+                a_tag = soup.find(class_=class_name).find(tag_name)
+                web_link = a_tag.get('href')
+                web_titile = a_tag.get_text()
+        
+            else:
+                print("Time is not valid:", "web_time is: ", web_time, "local_time is: ", local_time)
+                url = None
+                web_titile = None
+                web_link = None
+                web_time = None
         '''
+
         return web_link, web_titile, web_time 
-    
+
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
         raise ValueError
@@ -261,7 +283,8 @@ def get_arxiv_summary(_arxiv, query, max_results):
     if search.results() is not None:
         for result in search.results():
             web_time = unify_time(str(result.published))
-            _arxiv.get_page(result.entry_id, result.title, web_time)
+            publisher = "Arxiv"
+            _arxiv.get_page(result.entry_id, result.title, web_time, publisher)
             # _arxiv.get_content(result.summary)
     else:
         print("arxiv get nothing, you may want to try it later!")
@@ -282,19 +305,21 @@ def get_youtube_dojo(_youtb, channel_id):
     return
 
 def fetch_gnews_links(_google, query, max_results=3):
+    
     # 初始化 GNews
     google_news = GNews(language='en', period='1d',
                         start_date=None, end_date=None,
                         max_results=max_results, exclude_websites=None)
-
+          
     # 根据query获取新闻
     news_items = google_news.get_news(query)
-    for gn in news_items:
-        web_time = unify_time(gn.get('published date'))
-        _google.get_page(gn.get('url'), gn.get('title'), web_time)
-        article = google_news.get_full_article(gn['url'])
-        # article.download()
-        # print("gnews article:", article.text)
-        _google.get_content(article.text)
-
-    return article
+    if news_items == []:
+        print("ERROR: can't get google news")
+    else:
+        for gn in news_items:
+            web_time = unify_time(gn.get('published date'))
+            article = google_news.get_full_article(gn['url'])
+            _google.get_content(article.text)
+            _google.get_page(gn.get('url'), article.title, web_time, gn['publisher']['title'])
+        
+    return 

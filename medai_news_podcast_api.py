@@ -14,19 +14,20 @@ class Source(object):
         self.name = name
         self.ori_link = []
         self.url_link = []
+        self.web_time = []
+        self.publisher = []
 
         self.title = []
         self.trans_title = []
         
-        self.web_time = []
-
         self.content = []
         self.trans_content = []
     
-    def get_page(self, url_link, title, web_time):
+    def get_page(self, url_link, title, web_time, publisher):
         self.url_link.append(url_link)
         self.title.append(title)
         self.web_time.append(web_time)
+        self.publisher.append(publisher)
 
     def get_content(self, content):
         self.content.append(content)
@@ -39,17 +40,7 @@ class Source(object):
 def medai_news_podcast_api(websites, token_path, language, output_folder, format, trigger_time, day):  
     # 1. collect the information
     news_items = {}
-    
-    # google news
-    query = "AI medical, clinical image technology, medical image"
-    # query = "MRI AI"
-    # query = "clinica image AI"
-    # query = "medical CV"
-    
-    _google = Source("google")
-    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
-    news_items["google"] = _google
-    
+
     # arxiv直接调用api
     query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("MRI" AND eess.IV) OR ("CT" AND eess.IV) OR ("medical" AND cs.CV) OR ("medical image" AND cs.AI) OR ("clinical" AND cs.CV) OR ("clinical" AND eess.IV) OR ("ai" AND "medical") OR "image segentation"' 
     # query =  '("image" AND "medical") OR ("medical" AND eess.IV) OR ("medical" AND cs.CV) OR ("clinical image" AND cs.CV)'
@@ -58,6 +49,16 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
     _arxiv = Source("arxiv")
     get_arxiv_summary(_arxiv, query, max_results=3) # max_results可以自由改动
     news_items["arxiv"] = _arxiv
+    
+    # google news
+    # query = "AI medical, clinical image technology, medical image, AI"
+    # query = "MRI AI"
+    # query = "clinical image AI"
+    # query = "medical CV"
+    query = "AI medical, medical image"
+    _google = Source("google")
+    fetch_gnews_links(_google, query, max_results=3) # max_results可以自由改动
+    news_items["google"] = _google
     
     # # TODO --YOUTUBE上的内容只对视频界面的文字做了归纳，没有调用字幕归纳的函数
     # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
@@ -71,7 +72,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
         web_link, web_title, web_time = get_websit_info(site.url, site.tag_name, site.class_name, site.process_type, trigger_time, day)
         if web_link is not None:
             _web = Source(site.process_type)
-            _web.get_page(web_link, web_title, web_time)
+            _web.get_page(web_link, web_title, web_time, site.process_type)
             news_items[site.process_type] = _web
 
             print(f"在{site.process_type}网站爬取到的link和title和time是:\n{web_link}: {web_title}\n 发布时间是: {web_time}\n")
@@ -135,8 +136,8 @@ if __name__ == '__main__':
         WebsiteInfo(url="https://www.jiqizhixin.com", tag_name="a", class_name="article-item__right", process_type="机器之心"), # 机器之心
         WebsiteInfo(url="https://paperswithcode.com/latest", tag_name="h1", class_name="col-lg-9 item-content", process_type="paperwithcode"), # paper with code
         WebsiteInfo(url="https://www.auntminnie.com/", tag_name="a", class_name="node__title", process_type="auntminnie"), # auntminnie
-        # # WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title news", process_type="mobihealthnews"), # mobihealthnews
-        # # # TODO --添加分词器
+        WebsiteInfo(url="https://www.mobihealthnews.com/", tag_name="a", class_name="views-field views-field-field-short-headline views-field-title news", process_type="mobihealthnews"), # mobihealthnews
+        # # TODO --添加分词器
         # WebsiteInfo(url="https://www.nature.com/natbiomedeng/", tag_name="a", class_name="c-hero__title u-mt-0", process_type="natureBME"), # natureBME
         # WebsiteInfo(url="https://machinelearning.apple.com/", tag_name="h3.post-title a", class_name="", process_type="apple"), # apple_link&title
         # WebsiteInfo(url="https://blogs.nvidia.com/ai-podcast/", tag_name="ul", class_name="AI Podcast",process_type="nvidia"), # nvida_link&title
@@ -157,6 +158,6 @@ if __name__ == '__main__':
     # format可选markdown, markdown_dingding或excel
     # day 可选today和yesterday
 
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown_dingding', trigger_time, "2today")
+    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown_dingding', trigger_time, "today")
     # TODO -- 时间不完整，分词器用法需讨论
 
