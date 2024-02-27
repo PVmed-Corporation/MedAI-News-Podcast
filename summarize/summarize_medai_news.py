@@ -193,10 +193,11 @@ def LLM_processing_content(llm, client, news_items, language, chain_type="stuff"
                     output_test += '【web_chinese】'  + str(web_chinese) + '\n'                    
                     # add the translation version to collector
                     item.get_trans_info(title_chinese, web_chinese)                
-     
+    '''# debug
     with open("output/output.txt", "w") as file:
         # 将字符串写入文件
         file.write(output_test)
+    # debug end '''
     
     return
 

@@ -1,12 +1,13 @@
 # encoding:utf-8
-from get_medai_news import get_websit_info, get_arxiv_summary, \
+from getnews.get_medai_news import get_websit_info
+from getnews.get_news_third import get_arxiv_summary, \
     get_youtube_dojo, fetch_gnews_links
-from summarize_medai_news import LLM_processing_content, generate_paper_summary
+from summarize.summarize_medai_news import LLM_processing_content, generate_paper_summary
 from openai import OpenAI
 # from langchain.chat_models import ChatOpenAI
 # from langchain_community.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
-from generate_output import generate_result
+from exhibit.generate_output import generate_result
 import time
 
 
@@ -38,7 +39,7 @@ class Source(object):
         self.trans_content.append(trans_content)
 
 
-def medai_news_podcast_api(websites, token_path, language, output_folder, format, trigger_time, day):  
+def medai_news_podcast_api(websites, token_path, language, output_folder, output_format, trigger_time, day):  
     # 1. collect the information
     news_items = {}
 
@@ -51,7 +52,7 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     _arxiv = Source("arxiv")
     get_arxiv_summary(_arxiv, query, trigger_time, day, max_results=30)
-    if len(_arxiv.ori_link) > 0:
+    if len(_arxiv.title) > 0:
         news_items["arxiv"] = _arxiv
     
     # google news
@@ -61,7 +62,8 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     _google = Source("google")
     fetch_gnews_links(_google, query, trigger_time, day, max_results=10)
-    news_items["google"] = _google
+    if len(_google.title) > 0:
+        news_items["google"] = _google
     
     # # TODO --YOUTUBE上的内容只对视频界面的文字做了归纳，没有调用字幕归纳的函数
     # channel_id = "UCMLtBahI5DMrt0NPvDSoIRQ"
@@ -117,12 +119,12 @@ def medai_news_podcast_api(websites, token_path, language, output_folder, format
 
     # -----------------------------------------------------------------------------------
     # 3. generate the podcast to markdown file
-    if format == 'excel':
+    if output_format == 'excel':
         output_file_path = output_folder + language + '_'+ trigger_time + '_output.xlsx'
     else:
         output_file_path = output_folder + language + '_'+ trigger_time + '_output.md'
 
-    generate_result(news_items, language, LLM_paper_summary, format, output_file_path)
+    generate_result(news_items, language, LLM_paper_summary, output_format, output_file_path)
 
     return
 
@@ -151,14 +153,25 @@ if __name__ == '__main__':
         # # WebsiteInfo(url="https://le4ews xfridman.com/podcast/", tag_name="a", class_name="", process_type="lexfridman") # lexfridman_lin
     ]
     
-    # the local time when we run the code
-    # check the time zone where you are
-    trigger_time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+    # 2. api token text path
+    token_path = "config_file.txt"
     
-    # language可以选择Chinese或English
-    # output_folder选择一个文件夹
-    # format可选markdown, markdown_dingding或excel
-    # day 可选today和yesterday
-
-    medai_news_podcast_api(websites, "config_file.txt", 'Chinese', 'output/', 'markdown_dingding', trigger_time, "yesterday")
+    # 3. language可以选择Chinese或English
+    language =  'Chinese'
+    
+    # 4. output_folder选择一个文件夹
+    output_folder =  '/home/medai/songfeng/songfeng_output/'
+    
+    # 5. output format 可选markdown, markdown_dingding或excel
+    output_format = 'markdown_dingding'
+    
+    # 6. the local time when we run the code
+    # check the time zone where you are or set the time you want to get
+    trigger_time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+    # trigger_time = '2024-02-28-05-59-59'
+    
+    # 7. day 可选today和yesterday
+    day = "yesterday"
+    
+    medai_news_podcast_api(websites, token_path, language, output_folder, output_format, trigger_time, day)
 
