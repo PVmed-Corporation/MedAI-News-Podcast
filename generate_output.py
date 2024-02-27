@@ -66,14 +66,19 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
                     entry = {
                         'From': keys,
                         'Title': news_items[keys].title[ii],
+                        'web_time': news_items[keys].web_time[ii],
                         'URL': news_items[keys].url_link[ii],
                         'Web_Summary': news_items[keys].content[ii]
                     }
                 else:
                     entry = {
                         'From': keys,
+                        'Eng_Title': news_items[keys].title[ii],
                         'Title': news_items[keys].trans_title[ii],
+                        'web_time': news_items[keys].web_time[ii],
                         'URL': news_items[keys].url_link[ii],
+                        'publisher': news_items[keys].publisher[ii],
+                        'Eng_Web_Summary': news_items[keys].content[ii],
                         'Web_Summary': news_items[keys].trans_content[ii]
                     }                        
                 output_list.append(entry)
@@ -98,7 +103,7 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
                 markdown_all += f"""## Paper from {keys} \n\n"""
             else:
                 if ii == 1:
-                    markdown_all += """## News from Other Websites \n\n"""
+                    markdown_all += """## News from Websites \n\n"""
             markdown_all += generate_dingding_snippet(news_items, keys, language)
 
         with open(output_path, 'w', encoding='utf-8') as file:
