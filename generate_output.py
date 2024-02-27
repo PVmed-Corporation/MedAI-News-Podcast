@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def generate_html_snippet(news_items, keys, language, ):
     markdown_part = ''
     
@@ -29,6 +30,7 @@ def generate_html_snippet(news_items, keys, language, ):
         
     return markdown_part
 
+
 def generate_dingding_snippet(news_items, keys, language, ):
     markdown_part = ''
     
@@ -56,6 +58,7 @@ def generate_dingding_snippet(news_items, keys, language, ):
         markdown_part += f"{content}\n\n"
         
     return markdown_part
+
 
 def generate_result(news_items, language, LLM_paper_summary, format, output_path):
     if format == "excel":
@@ -111,7 +114,6 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
             print("Markdown文件已生成: ", output_path) 
         return markdown_all
 
-
     else:
         # 使用加载的实例
         markdown_all = " "
@@ -133,3 +135,4 @@ def generate_result(news_items, language, LLM_paper_summary, format, output_path
             file.write(markdown_all)
             print("Markdown文件已生成: ", output_path) 
         return markdown_all
+

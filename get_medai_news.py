@@ -18,6 +18,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.3'
     }
+
     response = requests.get(url, headers=headers) 
     
     # TODO: delete or not
@@ -36,6 +37,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
                 # 将基本 URL 与相对路径结合
                 web_link = url + target_link['href']
                 response = requests.get(web_link, headers=headers)
+                response.encoding = response.apparent_encoding
                 soup = BeautifulSoup(response.content, 'html.parser')
                 h1_tag = soup.find("h1", class_="f-display-2")
                 if h1_tag:
@@ -53,6 +55,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
             if transcript_link_element:
                 web_link = transcript_link_element['href']
                 response = requests.get(web_link, headers=headers)
+                response.encoding = response.apparent_encoding
                 soup = BeautifulSoup(response.content, 'html.parser')
                 h1_tag = soup.find("h1", class_="entry-title")
                 if h1_tag:
@@ -247,6 +250,7 @@ def get_websit_info(url, tag_name, class_name, process_type, local_time, day):
     else:
         print(f"Failed to fetch the webpage. Status code: {response.status_code}")
         raise ValueError
+        
 
 
 def get_arxiv_summary(_arxiv, query, trigger_time, day, max_results):
